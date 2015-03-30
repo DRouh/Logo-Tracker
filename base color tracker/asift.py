@@ -149,3 +149,24 @@ if __name__ == '__main__':
     match_and_draw('affine find_obj')
     cv2.waitKey()
     cv2.destroyAllWindows()
+    
+def my_asift_detection(im1,im2,kp1,desc1,kp2,desc2):
+    img1 = im1
+    img2 = im2
+    norm = cv2.NORM_L2
+    matcher = cv2.BFMatcher(norm)    
+    def match_and_draw(win):
+        with Timer('matching'):
+            raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
+        p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
+        if len(p1) >= 4:
+            H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+            print '%d / %d  inliers/matched' % (np.sum(status), len(status))
+            # do not draw outliers (there will be a lot of them)
+            kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
+        else:
+            H, status = None, None
+            print '%d matches found, not enough for homography estimation' % len(p1)
+
+        vis = explore_match(win, img1, img2, kp_pairs, None, H)
+    match_and_draw('affine find_obj')    

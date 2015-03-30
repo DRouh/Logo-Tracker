@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import colorsys
+import asift
 class ColourTracker:
     
   def __init__(self):
@@ -12,8 +13,12 @@ class ColourTracker:
   
   def run(self):    
     #colors = np.array([23,11,111])
+    sift = cv2.SIFT() 
     colors = np.array([170])
-
+    img1 = cv2.imread("e:\\master thesis\\Logo-Tracker\\base color tracker\\coca-cola.jpg", 0)
+    res = cv2.resize(img1, (640, 480), interpolation = cv2.INTER_CUBIC)
+    kp1, des1 = sift.detectAndCompute(res, None)   
+    
     out = cv2.VideoWriter('out.avi', 1, 12.0, (640,480))
     while True:
       f, orig_img = self.capture.read()
@@ -22,7 +27,6 @@ class ColourTracker:
       
       #calculate sift and draw it on result_img
       sift_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
-      sift = cv2.SIFT()      
       kp, des = sift.detectAndCompute(sift_img, None)          
       
       img = cv2.GaussianBlur(orig_img, (5,5), 0)
@@ -34,16 +38,22 @@ class ColourTracker:
       for i in range(len(boxArray)):
           if not boxArray[i] == None:              
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
-              filtered_keypoints, filtered_descs = self.filterKeypoints(kp,des, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
+              filtered_keypoints, filtered_descs = self.filterKeypoints(kp, des, boxArray[i][1][0],
+                                                                        boxArray[i][1][1], 
+                                                                        boxArray[i][3][0], 
+                                                                        boxArray[i][3][1])
               if filtered_keypoints != None:
                 img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
-                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)
+                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)       
+                
+                #do asift matching here
+                asift.my_asift_detection(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
               cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
               
       out.write(img_Sift)
       cv2.imshow("ColourTrackerWindow", orig_img)
       cv2.imshow("SIFT", img_Sift)
-
+      
       if cv2.waitKey(20) == 27:
         
         cv2.destroyWindow("ColourTrackerWindow")
@@ -68,8 +78,8 @@ class ColourTracker:
       return filtered_keypoints, np.array(filtered_desc)
   
   def getBoundingBox(self, bluredimage, hue):
-      lower = np.array([max(hue-10,0), 150, 50])
-      upper = np.array([min(hue+10,179), 255, 255])
+      lower = np.array([max(hue - 10, 0), 150, 50])
+      upper = np.array([min(hue + 10, 179), 255, 255])
       binary = cv2.inRange(bluredimage, lower, upper)
       
       #dilate binary image to get wider contours
