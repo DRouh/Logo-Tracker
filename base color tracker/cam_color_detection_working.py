@@ -24,7 +24,7 @@ class ColourTracker:
       sift_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
       sift = cv2.SIFT()      
       kp, des = sift.detectAndCompute(sift_img, None)          
-           
+      
       img = cv2.GaussianBlur(orig_img, (5,5), 0)
       img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)
       img = cv2.resize(img, (len(orig_img[0]) / self.scale_down, len(orig_img) / self.scale_down))
@@ -36,7 +36,7 @@ class ColourTracker:
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
               filtered_keypoints, filtered_descs = self.filterKeypoints(kp,des, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
               if filtered_keypoints != None:
-                img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, des)
+                img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
                 cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)
               cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
               
@@ -65,7 +65,7 @@ class ColourTracker:
             filtered_keypoints.append(kp[i])
             filtered_desc.append(des[i])
             
-      return filtered_keypoints,filtered_desc
+      return filtered_keypoints, np.array(filtered_desc)
   
   def getBoundingBox(self, bluredimage, hue):
       lower = np.array([max(hue-10,0), 150, 50])
