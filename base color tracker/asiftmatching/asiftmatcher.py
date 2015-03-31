@@ -31,8 +31,11 @@ class AsiftMatcher:
                 H, status = None, None
                 print '%d matches found, not enough for homography estimation' % len(p1)
     
-            vis = self.explore_match(win, img1, img2, kp_pairs, None, H)
-        match_and_draw('affine find_obj')
+            win, vis = self.explore_match(win, img1, img2, kp_pairs, None, H)
+            return win, vis
+            
+        win, vis = match_and_draw('affine find_obj')
+        return win, vis
         
     def affine_skew(self,tilt, phi, img, mask=None):
         '''
@@ -142,29 +145,29 @@ class AsiftMatcher:
         for (x1, y1), (x2, y2), inlier in zip(p1, p2, status):
             if inlier:
                 cv2.line(vis, (x1, y1), (x2, y2), green)
-    
-        cv2.imshow(win, vis)
-        def onmouse(event, x, y, flags, param):
-            cur_vis = vis
-            if flags & cv2.EVENT_FLAG_LBUTTON:
-                cur_vis = vis0.copy()
-                r = 8
-                m = (anorm(p1 - (x, y)) < r) | (anorm(p2 - (x, y)) < r)
-                idxs = np.where(m)[0]
-                kp1s, kp2s = [], []
-                for i in idxs:
-                     (x1, y1), (x2, y2) = p1[i], p2[i]
-                     col = (red, green)[status[i]]
-                     cv2.line(cur_vis, (x1, y1), (x2, y2), col)
-                     kp1, kp2 = kp_pairs[i]
-                     kp1s.append(kp1)
-                     kp2s.append(kp2)
-                cur_vis = cv2.drawKeypoints(cur_vis, kp1s, flags=4, color=kp_color)
-                cur_vis[:,w1:] = cv2.drawKeypoints(cur_vis[:,w1:], kp2s, flags=4, color=kp_color)
-    
-            cv2.imshow(win, cur_vis)
-        cv2.setMouseCallback(win, onmouse)
-        return vis        
+        return win, vis 
+        #cv2.imshow(win, vis)
+#        def onmouse(event, x, y, flags, param):
+#            cur_vis = vis
+#            if flags & cv2.EVENT_FLAG_LBUTTON:
+#                cur_vis = vis0.copy()
+#                r = 8
+#                m = (anorm(p1 - (x, y)) < r) | (anorm(p2 - (x, y)) < r)
+#                idxs = np.where(m)[0]
+#                kp1s, kp2s = [], []
+#                for i in idxs:
+#                     (x1, y1), (x2, y2) = p1[i], p2[i]
+#                     col = (red, green)[status[i]]
+#                     cv2.line(cur_vis, (x1, y1), (x2, y2), col)
+#                     kp1, kp2 = kp_pairs[i]
+#                     kp1s.append(kp1)
+#                     kp2s.append(kp2)
+#                cur_vis = cv2.drawKeypoints(cur_vis, kp1s, flags=4, color=kp_color)
+#                cur_vis[:,w1:] = cv2.drawKeypoints(cur_vis[:,w1:], kp2s, flags=4, color=kp_color)
+#    
+#            cv2.imshow(win, cur_vis)
+#        cv2.setMouseCallback(win, onmouse)
+        return win, vis        
         
     def filter_matches(self,kp1, kp2, matches, ratio = 0.75):
         mkp1, mkp2 = [], []

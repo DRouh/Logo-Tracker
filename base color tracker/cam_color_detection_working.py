@@ -3,7 +3,6 @@
 import cv2
 import numpy as np
 import colorsys
-import asift
 from asiftmatching import asiftmatcher
 class ColourTracker:
     
@@ -11,18 +10,18 @@ class ColourTracker:
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     self.capture = cv2.VideoCapture(0)    
     self.scale_down = 4
-  
-  def run(self):    
-    matcher = asiftmatcher.AsiftMatcher()
+    #self.Video = cv2.VideoWriter('456.avi', -1, 12.0, (640,480))
+    self.Video = cv2.VideoWriter('2346.avi', -1, 12.0, (696,1640))
     
+  def run(self):    
+    matcher = asiftmatcher.AsiftMatcher()    
     #colors = np.array([23,11,111])
     sift = cv2.SIFT() 
     colors = np.array([170])
     img1 = cv2.imread("e:\\master thesis\\Logo-Tracker\\base color tracker\\coca-cola.jpg", 0)
     res = cv2.resize(img1, (640, 480), interpolation = cv2.INTER_CUBIC)
     kp1, des1 = sift.detectAndCompute(res, None)   
-    
-    out = cv2.VideoWriter('out.avi', 1, 12.0, (640,480))
+    #out2 = cv2.VideoWriter('out2.avi', 1, 12.0, (640,480))
     while True:
       f, orig_img = self.capture.read()
       #orig_img = cv2.flip(orig_img, 1)            
@@ -47,22 +46,24 @@ class ColourTracker:
                                                                         boxArray[i][3][1])
               if filtered_keypoints != None:
                 img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
-                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)       
-                
-                #do asift matching here
-                #asift.my_asift_detection(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
-                matcher.asift_match(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
+                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)   
+                    
+                #do asift matching here              
+                _, vis = matcher.asift_match(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                           
+                cv2.imshow("Asift Matching", vis)                
+                self.Video.write(vis)
               cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
               
-      out.write(img_Sift)
+      #self.Video.write(orig_img)
       cv2.imshow("ColourTrackerWindow", orig_img)
       cv2.imshow("SIFT", img_Sift)
       
-      if cv2.waitKey(20) == 27:
-        
+      if cv2.waitKey(20) == 27:        
+        self.Video.release()
         cv2.destroyWindow("ColourTrackerWindow")
         cv2.destroyWindow("SIFT")
-        out.release()
+        cv2.destroyWindow("Asift Matching")
+
         self.capture.release()
         break
     
