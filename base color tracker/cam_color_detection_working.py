@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import colorsys
 import asift
+from asiftmatching import asiftmatcher
 class ColourTracker:
     
   def __init__(self):
@@ -12,6 +13,8 @@ class ColourTracker:
     self.scale_down = 4
   
   def run(self):    
+    matcher = asiftmatcher.AsiftMatcher()
+    
     #colors = np.array([23,11,111])
     sift = cv2.SIFT() 
     colors = np.array([170])
@@ -47,7 +50,8 @@ class ColourTracker:
                 cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)       
                 
                 #do asift matching here
-                asift.my_asift_detection(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
+                #asift.my_asift_detection(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
+                matcher.asift_match(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                
               cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
               
       out.write(img_Sift)
