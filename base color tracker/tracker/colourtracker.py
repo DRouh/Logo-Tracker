@@ -38,15 +38,16 @@ class ColourTracker:
       frameKp, frameDescs = self.AsiftMatcher.affine_detect(self.Detector, gray_img, mask=None, pool=self.Pool)
       
       #return num of logos and theirs bounding boxes
-      self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
-
+      img = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+      
       cv2.imshow("ColourTrackerWindow", orig_img)
-            
+      cv2.imshow("imgsift", img)     
+      
       framenum += 1
       if cv2.waitKey(20) == 27:        
         cv2.destroyWindow("ColourTrackerWindow")
-        cv2.destroyWindow("SIFT")
-        cv2.destroyWindow("Asift Matching")
+        cv2.destroyWindow("imgsift")
+        #cv2.destroyWindow("Asift Matching")
 
         self.capture.release()
         break
@@ -71,12 +72,12 @@ class ColourTracker:
                 #cv2.imshow("Asift Matching", vis)                
 #                cv2.imwrite("vis-" + str(framenum) + ".jpg", vis)     
               cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)
-              cv2.imshow("SIFT", img_Sift)
               
+      return img_Sift    
               
   
   def filterKeypoints(self, kp, des, left_x, left_y, right_x, right_y):
-      """Filters given SIFT-keypoints and return them and desc"""
+      """Filters given SIFT-keypoints by rect and return them and desc"""
       if kp == None:
           return None,None
           

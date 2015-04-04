@@ -3,7 +3,6 @@ import os
 import cv2
 
 from tracker.colourtracker import ColourTracker
-
 from dominantcolours.dominantcoloursdetector import DominantColoursDetector
 
 def loadColorsAndLabels(path,loadOnlyHues=True,blackAndWhite=True):
