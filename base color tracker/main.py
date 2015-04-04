@@ -24,15 +24,14 @@ class ColourTracker:
     self.RefImages = images
     self.Labels = labels
     self.Colors = colors        
-    self.Detector, self.Matcher = self.initilializeDetectorAndMatcher(name)    
+    self.Detector, self.Matcher = self.initilializeDetectorAndMatcher(name)
+    self.AsiftMatcher = asiftmatcher.AsiftMatcher(self.Matcher) 
     print 'using', name
     
-  def run(self):    
-    matcher = asiftmatcher.AsiftMatcher(self.Matcher)        
-    
+  def run(self):        
     colors = np.array([60])
     img1 = cv2.imread("e:\\master thesis\\Logo-Tracker\\base color tracker\\coca-cola.jpg", 0)   
-    kp1,des1 = matcher.affine_detect(self.Detector, img1, mask=None, pool=self.Pool)
+    kp1,des1 = self.AsiftMatcher.affine_detect(self.Detector, img1, mask=None, pool=self.Pool)
     framenum = 0
     
     while True:
@@ -40,34 +39,35 @@ class ColourTracker:
       #for i in range(3):
           #orig_img[:, :, i] = cv2.equalizeHist(orig_img[:, :, i])       
       img_Sift = np.copy(orig_img)      
+      
       #calculate sift and draw it on result_img
-      sift_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
-      kp,des = matcher.affine_detect(self.Detector, sift_img, mask=None, pool=self.Pool)
-      
-      img = cv2.GaussianBlur(orig_img, (5,5), 0)
-      img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)      
-      
-      boxArray = np.array([self.getBoundingBox(img, col) for col in colors])      
-      
-      for i in range(len(boxArray)):
-          if not boxArray[i] == None:              
-              r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
-              filtered_keypoints, filtered_descs = self.filterKeypoints(kp, des, boxArray[i][1][0],boxArray[i][1][1],boxArray[i][3][0],boxArray[i][3][1])
-                  
-              if filtered_keypoints != None:                
-                img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
-                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)   
-                    
-                #do asift matching here              
-                _, vis = matcher.asift_match(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                                           
-                cv2.imshow("Asift Matching", vis)                
-                cv2.imwrite("vis-" + str(framenum) + ".jpg", vis)
-     
-              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
+      gray_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
+      kp, des = self.AsiftMatcher.affine_detect(self.Detector, gray_img, mask=None, pool=self.Pool)
+      self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, kp, des, kp1, des1)
+#      img = cv2.GaussianBlur(orig_img, (5,5), 0)
+#      img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)      
+#      
+#      boxArray = np.array([self.getBoundingBox(img, col) for col in colors])      
+#      
+#      for i in range(len(boxArray)):
+#          if not boxArray[i] == None:              
+#              r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
+#              filtered_keypoints, filtered_descs = self.filterKeypoints(kp, des, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
+#                  
+#              if filtered_keypoints != None:                
+#                img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
+#                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)   
+#                    
+#                #do asift matching here              
+#                _, vis = matcher.asift_match(img1, sift_img, kp1, des1, filtered_keypoints, filtered_descs)                                           
+#                cv2.imshow("Asift Matching", vis)                
+#                cv2.imwrite("vis-" + str(framenum) + ".jpg", vis)
+#     
+#              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)              
                           
       #self.Video.write(orig_img)
       cv2.imshow("ColourTrackerWindow", orig_img)
-      cv2.imshow("SIFT", img_Sift)      
+      
       
       framenum += 1
       if cv2.waitKey(20) == 27:        
@@ -77,7 +77,29 @@ class ColourTracker:
 
         self.capture.release()
         break
-    
+  
+  def detectLogo(self, label, colors, ref_img, orig_img, gray_img, img_Sift, frameKp, frameDescs, refKp, refDescs):
+      img = cv2.GaussianBlur(orig_img, (5, 5), 0)
+      img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)      
+      
+      boxArray = np.array([self.getBoundingBox(img, int(col)) for col in colors])            
+      
+      for i in range(len(boxArray)):
+          if not boxArray[i] == None:              
+              r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))                               
+              filtered_keypoints, filtered_descs = self.filterKeypoints(
+                  frameKp, frameDescs, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
+              if filtered_keypoints != None and filtered_descs != None:                
+                img_Sift = cv2.drawKeypoints(gray_img, filtered_keypoints, filtered_descs)
+                
+                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)                       
+                #do asift matching here              
+                #_, vis = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)                                           
+                #cv2.imshow("Asift Matching", vis)                
+#                cv2.imwrite("vis-" + str(framenum) + ".jpg", vis)     
+              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)
+              cv2.imshow("SIFT", img_Sift)    
+  
   def filterKeypoints(self, kp, des, left_x, left_y, right_x, right_y):
       """Filters given SIFT-keypoints and return them and desc"""
       if kp == None:
@@ -184,8 +206,8 @@ def loadColorsAndLabels(path,loadOnlyHues=True,blackAndWhite=True):
 if __name__ == "__main__":
   path = 'e:/master thesis/Logo-Tracker/base color tracker/Images for color clustering/'
   colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
-  detect_dominant_colors = True
-  color_tracker_enable = False  
+  detect_dominant_colors = False
+  color_tracker_enable = True
   
   if detect_dominant_colors:
       colorDetect = DominantColoursDetector(path, show_clustering_result = False)
