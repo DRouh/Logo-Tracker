@@ -55,8 +55,7 @@ class ColourTracker:
     print 'using', name
     
   def run(self):    
-    matcher = asiftmatcher.AsiftMatcher(self.Matcher)    
-    #colors = np.array([23,11,111])
+    matcher = asiftmatcher.AsiftMatcher(self.Matcher)        
     colors = np.array([170])
     img1 = cv2.imread("e:\\master thesis\\Logo-Tracker\\base color tracker\\coca-cola.jpg", 0)   
     kp1,des1 = matcher.affine_detect(self.Detector, img1, mask=None, pool=self.Pool)
@@ -71,12 +70,10 @@ class ColourTracker:
       kp,des = matcher.affine_detect(self.Detector, sift_img, mask=None, pool=self.Pool)
       
       img = cv2.GaussianBlur(orig_img, (5,5), 0)
-      img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)
-      #img = cv2.resize(img, (len(orig_img[0]) / self.scale_down, len(orig_img) / self.scale_down))
+      img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)      
       
       boxArray = np.array([self.getBoundingBox(img, col) for col in colors])      
       
-
       for i in range(len(boxArray)):
           if not boxArray[i] == None:              
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
@@ -120,11 +117,15 @@ class ColourTracker:
             filtered_keypoints.append(kp[i])
             filtered_desc.append(des[i])
             
-      return filtered_keypoints, np.array(filtered_desc)
-  
-  def getBoundingBoxSmall(self, bluredimage, hue):
+      return filtered_keypoints, np.array(filtered_desc)   
+          
+  def getBoundingBox(self, bluredimage, hue, resize=False):
       lower = np.array([max(hue - 10, 0), 100, 100])
       upper = np.array([min(hue + 10, 179), 255, 255])
+      
+      if resize:
+          bluredimage = cv2.resize(bluredimage, (len(bluredimage[0]) / self.scale_down, len(bluredimage) / self.scale_down))
+          
       binary = cv2.inRange(bluredimage, lower, upper)
       
       #dilate binary image to get wider contours
@@ -148,44 +149,10 @@ class ColourTracker:
           
       if not largest_contour == None:         
         moment = cv2.moments(largest_contour)
-        if moment["m00"] > 1000 / self.scale_down:
-          rect = cv2.minAreaRect(largest_contour)          
-          rect = ((rect[0][0] * self.scale_down, rect[0][1] * self.scale_down), (rect[1][0] * self.scale_down, rect[1][1] * self.scale_down), 0)#rect[2])
-          box = cv2.cv.BoxPoints(rect)
-          box = np.int0(box)
-          return box
-      else:
-          return None        
-          
-  def getBoundingBox(self, bluredimage, hue):
-      lower = np.array([max(hue - 10, 0), 100, 100])
-      upper = np.array([min(hue + 10, 179), 255, 255])
-      binary = cv2.inRange(bluredimage, lower, upper)
-      
-      #dilate binary image to get wider contours
-      dilation = np.ones((15, 15), "uint8")
-      binary = cv2.dilate(binary, dilation)
-      
-      #While finding contours, you are also finding the hierarchy of the contours.
-      #Hierarchy of the contours is the relation between different contours.
-      #So the flag you used in your code, cv2.RETR_TREE provides all the hierarchical relationship.
-      #cv2.RETR_LIST provides no hierarchy while cv2.RETR_EXTERNAL gives you only external contours.
-      
-      contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-      max_area = 0
-      largest_contour = None
-      
-      for idx, contour in enumerate(contours):
-        area = cv2.contourArea(contour)
-        if area > max_area:
-          max_area = area
-          largest_contour = contour
-          
-      if not largest_contour == None:         
-        moment = cv2.moments(largest_contour)
-        if moment["m00"] > 1000:
-          rect = cv2.minAreaRect(largest_contour)          
-          rect = ((rect[0][0], rect[0][1]), (rect[1][0], rect[1][1]), 0)
+        factor = self.scale_down if resize else 1
+        if moment["m00"] > 1000 / factor:
+          rect = cv2.minAreaRect(largest_contour)                    
+          rect = ((rect[0][0] * factor, rect[0][1] * factor), (rect[1][0] * factor, rect[1][1] * factor), 0)#rect[2])
           box = cv2.cv.BoxPoints(rect)
           box = np.int0(box)
           return box
@@ -197,15 +164,14 @@ def loadColorsAndLabels(path):
     colors = [np.loadtxt(os.path.join(path, f)) for f in text_files]
     labels = [f[:-4] for f in text_files]
     return colors,labels
-
   
 if __name__ == "__main__":
   path = 'e:/master thesis/Logo-Tracker/base color tracker/Images for color clustering/'
-  colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
-  colors,labels = loadColorsAndLabels(colorsPath)
-  print labels
+  #colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
+ # colors,labels = loadColorsAndLabels(colorsPath)
+  #print labels
   #colorDetect = DominantColoursDetector(path)
   #colorDetect.findDominantColors()
-  #colour_tracker = ColourTracker("sift")
-  #colour_tracker.run()
+  colour_tracker = ColourTracker("sift")
+  colour_tracker.run()
   
