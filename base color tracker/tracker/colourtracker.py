@@ -73,7 +73,7 @@ class ColourTracker:
               if filtered_keypoints != None and filtered_descs != None:                
                 gray_img = cv2.drawKeypoints(gray_img, filtered_keypoints, filtered_descs)  
                 cv2.drawContours(gray_img,[boxArray[i]], 0, (b, g, r), 1) 
-                cv2.imshow("sift", gray_img)                                                                    
+                                                              
               inl, matches = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)
               
               if inl == None or matches == None:
@@ -83,11 +83,10 @@ class ColourTracker:
               scores.append(score)
               if matches >= 50 and score > 0.45:
                   found += 1
-                  frameKp, frameDescs = self.DeleteKeypoints(frameKp, frameDescs, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
-              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)
-              
-              
-      
+                  frameKp, frameDescs = self.DeleteKeypoints(
+                      frameKp, frameDescs, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
+              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)                            
+      cv2.imshow("sift", gray_img)      
       if found>0:
           print "Found", label, found
       return found, frameKp, frameDescs
