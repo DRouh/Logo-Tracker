@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import colorsys
 from multiprocessing.pool import ThreadPool
+import copy
 
 from asiftmatching import asiftmatcher
 
@@ -13,6 +14,7 @@ FLANN_INDEX_LSH    = 6
 class ColourTracker:
     
   def __init__(self, name, labels, images, colors):
+    print 'ColourTracker started. Using', name
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     self.capture = cv2.VideoCapture(0)    
     self.scale_down = 4
@@ -22,42 +24,46 @@ class ColourTracker:
     self.Colors = colors        
     self.Detector, self.Matcher = self.initilializeDetectorAndMatcher(name)
     self.AsiftMatcher = asiftmatcher.AsiftMatcher(self.Matcher) 
-    print 'using', name
+    
     
   def run(self):           
     framenum = 0
     
     while True:
       f, orig_img = self.capture.read()
+      if orig_img == None:
+          continue
+
       #for i in range(3):
           #orig_img[:, :, i] = cv2.equalizeHist(orig_img[:, :, i])       
-      img_Sift = np.copy(orig_img)      
+      img_Sift = copy.deepcopy(orig_img)#np.copy(orig_img)      
       
       #calculate sift and draw it on result_img
-      gray_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
+      gray_img = cv2.cvtColor(img_Sift, cv2.COLOR_BGR2GRAY)       
       frameKp, frameDescs = self.AsiftMatcher.affine_detect(self.Detector, gray_img, mask=None, pool=self.Pool)
       
       #return num of logos and theirs bounding boxes
-      img = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
-      
-      cv2.imshow("ColourTrackerWindow", orig_img)
-      cv2.imshow("imgsift", img)     
+      found, frameKp, frameDesc = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+      print found
+      cv2.imshow("ColourTrackerWindow", orig_img) 
       
       framenum += 1
       if cv2.waitKey(20) == 27:        
         cv2.destroyWindow("ColourTrackerWindow")
-        cv2.destroyWindow("imgsift")
+        cv2.destroyWindow("sift")
         #cv2.destroyWindow("Asift Matching")
 
         self.capture.release()
         break
   
   def detectLogo(self, label, colors, ref_img, orig_img, gray_img, img_Sift, frameKp, frameDescs):
+      print " Finding",label
       refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, ref_img, mask = None, pool = self.Pool)
       img = cv2.GaussianBlur(orig_img, (5, 5), 0)
       img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)            
       boxArray = np.array([self.getBoundingBox(img, int(col)) for col in colors])            
-      
+      scores = []
+      found = 0
       for i in range(len(boxArray)):
           if not boxArray[i] == None:              
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))                               
@@ -66,15 +72,37 @@ class ColourTracker:
               if filtered_keypoints != None and filtered_descs != None:                
                 img_Sift = cv2.drawKeypoints(gray_img, filtered_keypoints, filtered_descs)
                 
-                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)                       
-                #do asift matching here              
-                #_, vis = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)                                           
-                #cv2.imshow("Asift Matching", vis)                
-#                cv2.imwrite("vis-" + str(framenum) + ".jpg", vis)     
-              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)
+                cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)                                       
+              inl, matches = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)
+              if inl == None or matches == None:
+                continue
+            
+              score = float(inl)/float(matches)
+              scores.append(score)
+              if matches >= 50 and score > 0.45:
+                  found += 1
+                  frameKp, frameDescs = self.DeleteKeypoints(frameKp, frameDescs, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
+              cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1) 
               
-      return img_Sift    
+      cv2.imshow("sift", img_Sift)
+      if found>0:
+          print "Found", label, found
+      return found, frameKp, frameDescs
               
+  def DeleteKeypoints(self, kp, des, left_x, left_y, right_x, right_y):
+      """Deletes keypoints from set so we can check only new keypoints in that frame"""
+      if kp == None:
+          return None, None
+          
+      filtered_keypoints = []
+      filtered_desc = []
+      for i in range(len(kp)):
+          kp_x,kp_y = kp[i].pt
+          if(kp_x < left_x and kp_x > right_x and kp_y < left_y and kp_y > right_y):
+            filtered_keypoints.append(kp[i])
+            filtered_desc.append(des[i])
+            
+      return filtered_keypoints, np.array(filtered_desc)   
   
   def filterKeypoints(self, kp, des, left_x, left_y, right_x, right_y):
       """Filters given SIFT-keypoints by rect and return them and desc"""

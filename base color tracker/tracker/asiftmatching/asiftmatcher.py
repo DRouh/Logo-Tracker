@@ -24,26 +24,29 @@ class AsiftMatcher:
                 with Timer('matching'):                
                     raw_matches = self.Mactcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
                     
-                p1, p2, kp_pairs = self.filter_matches(kp1, kp2, raw_matches)
-                
+                p1, p2, kp_pairs = self.filter_matches(kp1, kp2, raw_matches)                
                 
                 if len(p1) >= 4 and len(p2) >= 4:
                     H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
                     print '%d / %d  inliers/matched' % (np.sum(status), len(status))
                     # do not draw outliers (there will be a lot of them)
-                    kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]                    
+                    kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
+                    return np.sum(status), len(status)                    
                 else:
                     H, status = None, None
                     noMatches = True
                     print '%d matches found, not enough for homography estimation' % len(p1)
+                    return None, None
             else:
-                noMatches = True
+                return None, None
+                #noMatches = True
     
-            win, vis = self.explore_match(win, img1, img2, kp_pairs, noMatches, None, H)
-            return win, vis
+            #win, vis = self.explore_match(win, img1, img2, kp_pairs, noMatches, None, H)
+            #return win, vis
             
-        win, vis = match_and_draw('affine find_obj')
-        return win, vis
+        #win, vis = match_and_draw('affine find_obj')
+        a,b = match_and_draw('affine find_obj')
+        return a,b
         
     def affine_skew(self,tilt, phi, img, mask=None):
         '''
