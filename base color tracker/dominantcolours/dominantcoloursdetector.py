@@ -54,3 +54,4 @@ class DominantColoursDetector:
             
         print   
         print "All images proccessed"
+        return
