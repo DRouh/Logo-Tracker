@@ -103,8 +103,8 @@ if __name__ == '__main__':
     try:
         fn1, fn2 = args
     except:
-        fn1 = "d:\\downloads\\test\\coca-cola.jpg"
-        fn2 = "d:\\downloads\\test\\rsz_1123.jpg"
+        fn1 = "e:\\master thesis\\Logo-Tracker\\base color tracker\\old\\coca-cola.jpg"
+        fn2 = "e:\\master thesis\\Logo-Tracker\\base color tracker\\old\\test.jpg"
         
 
     img1 = cv2.imread(fn1, 0)

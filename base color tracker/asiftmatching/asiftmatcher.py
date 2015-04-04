@@ -11,7 +11,7 @@ class AsiftMatcher:
         print "Initializing asift matcher"
         self.Mactcher = matcher
 
-    def asift_match(self, im1, im2, kp1, desc1, kp2, desc2):
+    def asift_match(self, im1, im2, kp1, desc1, kp2, desc2, minMatches = 50):
         img1 = im1
         img2 = im2
         norm = cv2.NORM_L2        
@@ -25,6 +25,8 @@ class AsiftMatcher:
                     raw_matches = self.Mactcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
                     
                 p1, p2, kp_pairs = self.filter_matches(kp1, kp2, raw_matches)
+                
+                
                 if len(p1) >= 4 and len(p2) >= 4:
                     H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
                     print '%d / %d  inliers/matched' % (np.sum(status), len(status))
