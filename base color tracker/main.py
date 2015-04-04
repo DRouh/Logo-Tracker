@@ -16,55 +16,30 @@ FLANN_INDEX_KDTREE = 1  # bug: flann enums are missing
 FLANN_INDEX_LSH    = 6
 class ColourTracker:
     
-  def __init__(self, name):
+  def __init__(self, name, labels, images, colors):
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     self.capture = cv2.VideoCapture(0)    
     self.scale_down = 4
     self.Pool = ThreadPool(processes = cv2.getNumberOfCPUs())    
-    chunks = name.split('-')
-    if chunks[0] == 'sift':
-        detector = cv2.SIFT()  #cv2.xfeatures2d.SIFT_create()
-        norm = cv2.NORM_L2
-    elif chunks[0] == 'surf':
-        detector = cv2.SURF(800)
-        norm = cv2.NORM_L2
-    elif chunks[0] == 'orb':
-        detector = cv2.ORB()
-        norm = cv2.NORM_HAMMING
-    elif chunks[0] == 'akaze':
-        detector = cv2.AKAZE_create()
-        norm = cv2.NORM_HAMMING
-    elif chunks[0] == 'brisk':
-        detector = cv2.BRISK_create()
-        norm = cv2.NORM_HAMMING
-    else:
-        return None, None
-    if 'flann' in chunks:
-        if norm == cv2.NORM_L2:
-            flann_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-        else:
-            flann_params= dict(algorithm = FLANN_INDEX_LSH,
-                               table_number = 6, # 12
-                               key_size = 12,     # 20
-                               multi_probe_level = 1) #2
-        matcher = cv2.FlannBasedMatcher(flann_params, {})  # bug : need to pass empty dict (#1329)
-    else:
-        matcher = cv2.BFMatcher(norm)
-    self.Detector = detector
-    self.Matcher = matcher
+    self.RefImages = images
+    self.Labels = labels
+    self.Colors = colors        
+    self.Detector, self.Matcher = self.initilializeDetectorAndMatcher(name)    
     print 'using', name
     
   def run(self):    
     matcher = asiftmatcher.AsiftMatcher(self.Matcher)        
-    colors = np.array([170])
+    
+    colors = np.array([60])
     img1 = cv2.imread("e:\\master thesis\\Logo-Tracker\\base color tracker\\coca-cola.jpg", 0)   
     kp1,des1 = matcher.affine_detect(self.Detector, img1, mask=None, pool=self.Pool)
     framenum = 0
     
     while True:
       f, orig_img = self.capture.read()
-      img_Sift = np.copy(orig_img)
-      
+      #for i in range(3):
+          #orig_img[:, :, i] = cv2.equalizeHist(orig_img[:, :, i])       
+      img_Sift = np.copy(orig_img)      
       #calculate sift and draw it on result_img
       sift_img = cv2.cvtColor(img_Sift ,cv2.COLOR_BGR2GRAY)       
       kp,des = matcher.affine_detect(self.Detector, sift_img, mask=None, pool=self.Pool)
@@ -79,8 +54,7 @@ class ColourTracker:
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))   
               filtered_keypoints, filtered_descs = self.filterKeypoints(kp, des, boxArray[i][1][0],boxArray[i][1][1],boxArray[i][3][0],boxArray[i][3][1])
                   
-              if filtered_keypoints != None:
-                #img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
+              if filtered_keypoints != None:                
                 img_Sift = cv2.drawKeypoints(sift_img, filtered_keypoints, filtered_descs)
                 cv2.drawContours(img_Sift,[boxArray[i]], 0, (b, g, r), 1)   
                     
@@ -120,7 +94,7 @@ class ColourTracker:
       return filtered_keypoints, np.array(filtered_desc)   
           
   def getBoundingBox(self, bluredimage, hue, resize=False):
-      lower = np.array([max(hue - 10, 0), 100, 100])
+      lower = np.array([max(hue - 10, 0), 50, 50])
       upper = np.array([min(hue + 10, 179), 255, 255])
       
       if resize:
@@ -157,21 +131,69 @@ class ColourTracker:
           box = np.int0(box)
           return box
       else:
-          return None 
+          return None
+          
+  def initilializeDetectorAndMatcher(self,name):
+    chunks = name.split('-')
+    if chunks[0] == 'sift':
+        detector = cv2.SIFT()  #cv2.xfeatures2d.SIFT_create()
+        norm = cv2.NORM_L2
+    elif chunks[0] == 'surf':
+        detector = cv2.SURF(800)
+        norm = cv2.NORM_L2
+    elif chunks[0] == 'orb':
+        detector = cv2.ORB()
+        norm = cv2.NORM_HAMMING
+    elif chunks[0] == 'akaze':
+        detector = cv2.AKAZE_create()
+        norm = cv2.NORM_HAMMING
+    elif chunks[0] == 'brisk':
+        detector = cv2.BRISK_create()
+        norm = cv2.NORM_HAMMING
+    else:
+        return None, None
+    if 'flann' in chunks:
+        if norm == cv2.NORM_L2:
+            flann_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        else:
+            flann_params= dict(algorithm = FLANN_INDEX_LSH,
+                               table_number = 6, # 12
+                               key_size = 12,     # 20
+                               multi_probe_level = 1) #2
+        matcher = cv2.FlannBasedMatcher(flann_params, {})  # bug : need to pass empty dict (#1329)
+    else:
+        matcher = cv2.BFMatcher(norm)
+    return detector, matcher
 
-def loadColorsAndLabels(path):
-    text_files = [f for f in os.listdir(colorsPath) if f.endswith('.txt')]
+def loadColorsAndLabels(path,loadOnlyHues=True,blackAndWhite=True):
+    """Load text files with dominant colors, loads labels and corresponding reference images"""
+    text_files = [f for f in os.listdir(path) if f.endswith('.txt')]
+    
     colors = [np.loadtxt(os.path.join(path, f)) for f in text_files]
+
+    if loadOnlyHues:
+      colors = [col[:,0] for col in colors]
+      
     labels = [f[:-4] for f in text_files]
-    return colors,labels
+    
+    bw = 0 if blackAndWhite else 1
+    refer_imgs = [cv2.imread(os.path.join(path,img), bw) for img in os.listdir(path) 
+                  if img[:-4] in labels and (img.endswith('.jpg') or img.endswith('.png'))]        
+    return colors,labels,refer_imgs
   
 if __name__ == "__main__":
   path = 'e:/master thesis/Logo-Tracker/base color tracker/Images for color clustering/'
-  #colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
- # colors,labels = loadColorsAndLabels(colorsPath)
-  #print labels
-  #colorDetect = DominantColoursDetector(path)
-  #colorDetect.findDominantColors()
-  colour_tracker = ColourTracker("sift")
-  colour_tracker.run()
+  colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
+  detect_dominant_colors = True
+  color_tracker_enable = False  
+  
+  if detect_dominant_colors:
+      colorDetect = DominantColoursDetector(path, show_clustering_result = False)
+      colorDetect.findDominantColors()
+      
+  colors, labels, refer_imgs = loadColorsAndLabels(colorsPath)  
+  
+  if color_tracker_enable:    
+      colour_tracker = ColourTracker("sift", labels, refer_imgs, colors)
+      colour_tracker.run()
   
