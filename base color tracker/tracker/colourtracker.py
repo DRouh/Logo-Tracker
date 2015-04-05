@@ -29,33 +29,42 @@ class ColourTracker:
     
   def run(self):           
     framenum = 0
-    
+    length = int(self.capture.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
     while True:
       f, orig_img = self.capture.read()
       if orig_img == None:
           continue
-      
-      length = int(self.capture.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
-      
+      print "Frame: {0}/{1}".format(framenum + 1, length),
+ 
       #for i in range(3):
       #    orig_img[:, :, i] = cv2.equalizeHist(orig_img[:, :, i])       
-      img_Sift = copy.deepcopy(orig_img)#np.copy(orig_img)      
+      img_Sift = copy.deepcopy(orig_img)    
       
       #calculate sift and draw it on result_img
       gray_img = cv2.cvtColor(img_Sift, cv2.COLOR_BGR2GRAY)       
       frameKp, frameDescs = self.AsiftMatcher.affine_detect(self.Detector, gray_img, mask=None, pool=self.Pool)
       
+      #put loop over all logos here
       #return num of logos and theirs bounding boxes
       found, boxes = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+      
+      #put logo ref-image along with frame if it's found in it
+      img3 = cv2.resize(self.RefImages[0], (160, 120))
+      h1, w1 = gray_img.shape[:2]
+      h2, w2 = img3.shape[:2] 
+      vis = np.zeros((max(h1, h2), w1+w2), np.uint8)
+      vis[:h1, :w1] = gray_img      
       if found > 0 and len(boxes) > 0:
           for i in range(len(boxes)):
-              cv2.drawContours(gray_img,[boxes[i]], 0, (255, 255, 0), 2)                  
+              cv2.drawContours(vis,[boxes[i]], 0, (255, 255, 0), 2)                       
+          vis[:h2, w1:w1+w2] = img3                    
       
       #cv2.imshow("sift", gray_img)
       #cv2.imshow("ColourTrackerWindow", orig_img) 
-      print "Frame: {0}/{1}".format(framenum + 1, length),
-      cv2.imwrite(str(framenum) + ".jpg",gray_img)
+
+      cv2.imwrite(str(framenum) + ".jpg",vis)
       framenum += 1
+      
       if cv2.waitKey(20) == 27:        
         cv2.destroyAllWindows()    
         self.capture.release()
