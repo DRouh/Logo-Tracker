@@ -22,20 +22,23 @@ def loadColorsAndLabels(path,loadOnlyHues=True,blackAndWhite=True):
     return colors,labels,refer_imgs
   
 if __name__ == "__main__":
+  #dominant colors options
   path = 'e:/master thesis/Logo-Tracker/base color tracker/Images for color clustering/'
   colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
   detect_dominant_colors = False
   
+  #color tracker options
   color_tracker_enable = True
   readFromFile = True
-  pathToVideo = "e:/master thesis/Logo-Tracker/base color tracker/coca-cola.mp4"
+  pathToVideo = "e:/master thesis/Logo-Tracker/base color tracker/starbucks.mp4"
   
+#detect dominant colors
   if detect_dominant_colors:
       colorDetect = DominantColoursDetector(path, show_clustering_result = False)
       colorDetect.findDominantColors()
-      
-  colors, labels, refer_imgs = loadColorsAndLabels(colorsPath)  
-  
+
+#color tracker routine        
   if color_tracker_enable:    
+      colors, labels, refer_imgs = loadColorsAndLabels(colorsPath)
       colour_tracker = ColourTracker("sift", labels, refer_imgs, colors, pathToVideo, readFromFile)
       colour_tracker.run()
