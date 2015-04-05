@@ -13,10 +13,11 @@ FLANN_INDEX_LSH    = 6
 
 class ColourTracker:
     
-  def __init__(self, name, labels, images, colors):
+  def __init__(self, name, labels, images, colors, pathToFile, readFromFile = False):
     print 'ColourTracker started. Using', name
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
-    self.capture = cv2.VideoCapture(0)    
+    capture = pathToFile if readFromFile else 0
+    self.capture = cv2.VideoCapture(capture)     
     self.scale_down = 4
     self.Pool = ThreadPool(processes = cv2.getNumberOfCPUs())    
     self.RefImages = images

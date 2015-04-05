@@ -25,7 +25,10 @@ if __name__ == "__main__":
   path = 'e:/master thesis/Logo-Tracker/base color tracker/Images for color clustering/'
   colorsPath = 'e:/master thesis//Logo-Tracker/base color tracker/Images for color clustering/'
   detect_dominant_colors = False
+  
   color_tracker_enable = True
+  readFromFile = True
+  pathToVideo = "e:/master thesis/Logo-Tracker/base color tracker/coca-cola.mp4"
   
   if detect_dominant_colors:
       colorDetect = DominantColoursDetector(path, show_clustering_result = False)
@@ -34,5 +37,5 @@ if __name__ == "__main__":
   colors, labels, refer_imgs = loadColorsAndLabels(colorsPath)  
   
   if color_tracker_enable:    
-      colour_tracker = ColourTracker("sift", labels, refer_imgs, colors)
+      colour_tracker = ColourTracker("sift", labels, refer_imgs, colors, pathToVideo, readFromFile)
       colour_tracker.run()
