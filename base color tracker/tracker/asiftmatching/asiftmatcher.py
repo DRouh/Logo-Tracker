@@ -28,14 +28,14 @@ class AsiftMatcher:
                 
                 if len(p1) >= 4 and len(p2) >= 4:
                     H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-                    print '%d / %d  inliers/matched' % (np.sum(status), len(status))
+                    #print '%d / %d  inliers/matched' % (np.sum(status), len(status))
                     # do not draw outliers (there will be a lot of them)
                     kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
                     return np.sum(status), len(status)                    
                 else:
                     H, status = None, None
                     noMatches = True
-                    print '%d matches found, not enough for homography estimation' % len(p1)
+                    #print '%d matches found, not enough for homography estimation' % len(p1)
                     return None, None
             else:
                 return None, None
@@ -109,7 +109,7 @@ class AsiftMatcher:
             ires = pool.imap(f, params)
     
         for i, (k, d) in enumerate(ires):
-            print 'affine sampling: %d / %d\r' % (i+1, len(params)),
+            #print 'affine sampling: %d / %d\r' % (i+1, len(params)),
             keypoints.extend(k)
             descrs.extend(d)
     
