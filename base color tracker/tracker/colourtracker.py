@@ -13,14 +13,15 @@ FLANN_INDEX_LSH    = 6
 
 class ColourTracker:
     
-  def __init__(self, name, labels, images, colors, pathToFile, readFromFile = False):
+  def __init__(self, name, labels, imagesBW, imagesCLR, colors, pathToFile, readFromFile = False):
     print 'ColourTracker started. Using', name
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     capture = pathToFile if readFromFile else 0
     self.capture = cv2.VideoCapture(capture)     
     self.scale_down = 4
     self.Pool = ThreadPool(processes = cv2.getNumberOfCPUs())    
-    self.RefImages = images
+    self.RefImagesBW = imagesBW
+    self.RefImagesCLR = imagesCLR
     self.Labels = labels
     self.Colors = colors        
     self.Detector, self.Matcher = self.initilializeDetectorAndMatcher(name)
@@ -46,14 +47,14 @@ class ColourTracker:
       
       #put loop over all logos here
       #return num of logos and theirs bounding boxes
-      found, boxes = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImages[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+      found, boxes = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImagesBW[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
       
       #put logo ref-image along with frame if it's found in it
-      img3 = cv2.resize(self.RefImages[0], (160, 120))
-      h1, w1 = gray_img.shape[:2]
-      h2, w2 = img3.shape[:2] 
-      vis = np.zeros((max(h1, h2), w1+w2), np.uint8)
-      vis[:h1, :w1] = gray_img      
+      img3 = cv2.resize(self.RefImagesCLR[0], (160, 120))
+      h1, w1,c1 = orig_img.shape[:3]
+      h2, w2,c2 = img3.shape[:3] 
+      vis = np.zeros((max(h1, h2), w1+w2, 3), np.uint8)
+      vis[:h1, :w1] = orig_img      
       if found > 0 and len(boxes) > 0:
           for i in range(len(boxes)):
               cv2.drawContours(vis,[boxes[i]], 0, (255, 255, 0), 2)                       
@@ -100,7 +101,7 @@ class ColourTracker:
                 scores.append(score)
                 if matches >= 50 and score > 0.45:
                   found += 1
-                  box = self.MinRectByKeypoints(matchedKp)                                       
+                  box = self.MinRectByMatchedKeypoints(matchedKp)                                       
                   boxes.append(box)
                   fKp, fDes = self.DeleteKeypoints(
                       fKp, fDes, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
