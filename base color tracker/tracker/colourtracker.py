@@ -56,7 +56,7 @@ class ColourTracker:
       vis = np.zeros((max(h_orig, hr * logNum), w_orig + wr, 3), np.uint8)  
       vis[:h_orig, :w_orig] = orig_img   
       found = 0
-      for i in range(2):
+      for i in range(len(self.Labels)):
           found, box = self.detectLogo(self.Labels[i], self.Colors[i], self.RefImagesBW[i], orig_img, gray_img, img_Sift, frameKp, frameDescs)
           #put logo ref-image along with frame if it's found in it
           if found > 0 and len(box) > 0:
@@ -107,7 +107,8 @@ class ColourTracker:
             
                 score = float(inl)/float(matches)
             
-                if matches >= 50 and score > 0.45:
+                if matches >= 150 and score > 0.48:
+                  print matches
                   found += 1
                   box = self.MinRectByMatchedKeypoints(matchedKp) 
                   scores.append(score)
@@ -119,6 +120,7 @@ class ColourTracker:
       
       if len(scores) > 0:
           maxIdx = np.argmax(np.array(scores))
+          print scores[maxIdx]
           return found, boxes[maxIdx]
       else:
           return 0, 0
