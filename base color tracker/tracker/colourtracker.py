@@ -30,6 +30,13 @@ class ColourTracker:
     
   def run(self):           
     framenum = 0
+    
+    hr = 160 # constant for ref-logos resizing
+    wr = 120 # constant for ref-logos resizing
+    h_orig, w_orig, c_orig = (480, 640, 3)      
+    logNum = len(self.Colors)
+      
+    
     length = int(self.capture.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
     while True:
       f, orig_img = self.capture.read()
@@ -42,23 +49,23 @@ class ColourTracker:
       img_Sift = copy.deepcopy(orig_img)    
       
       #calculate sift and draw it on result_img
-      gray_img = cv2.cvtColor(img_Sift, cv2.COLOR_BGR2GRAY)       
+      gray_img = cv2.cvtColor(img_Sift, cv2.COLOR_BGR2GRAY)             
       frameKp, frameDescs = self.AsiftMatcher.affine_detect(self.Detector, gray_img, mask=None, pool=self.Pool)
       
-      #put loop over all logos here
-      #return num of logos and theirs bounding boxes
-      found, boxes = self.detectLogo(self.Labels[0], self.Colors[0], self.RefImagesBW[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
-      
-      #put logo ref-image along with frame if it's found in it
-      img3 = cv2.resize(self.RefImagesCLR[0], (160, 120))
-      h1, w1,c1 = orig_img.shape[:3]
-      h2, w2,c2 = img3.shape[:3] 
-      vis = np.zeros((max(h1, h2), w1+w2, 3), np.uint8)
-      vis[:h1, :w1] = orig_img      
-      if found > 0 and len(boxes) > 0:
-          for i in range(len(boxes)):
-              cv2.drawContours(vis,[boxes[i]], 0, (255, 255, 0), 2)                       
-          vis[:h2, w1:w1+w2] = img3                    
+      #put frame in container
+      vis = np.zeros((max(h_orig, hr * logNum), w_orig + wr, 3), np.uint8)  
+      vis[:h_orig, :w_orig] = orig_img   
+      found = 0
+      for i in range(2):
+          found, box = self.detectLogo(self.Labels[i], self.Colors[i], self.RefImagesBW[i], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+          #put logo ref-image along with frame if it's found in it
+          if found > 0 and len(box) > 0:
+              print "found", self.Labels[i]
+              cv2.drawContours(vis,[box], 0, (255, 255, 0), 2)                       
+              #put ref-logo in container
+              vis[i * hr:(i + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[i], (wr, hr))
+          else:
+              vis[i * hr:(i + 1) * hr, w_orig:w_orig + wr] = np.zeros((hr, wr, 3), np.uint8) 
       
       #cv2.imshow("sift", gray_img)
       #cv2.imshow("ColourTrackerWindow", orig_img) 
@@ -82,6 +89,7 @@ class ColourTracker:
       fKp = frameKp
       fDes = frameDescs
       boxes = []
+
       for i in range(len(boxArray)):
           if boxArray[i] != None:              
               r, g, b = (i * 255 for i in colorsys.hsv_to_rgb(colors[i] / float(179), 1, 1))                               
@@ -98,17 +106,22 @@ class ColourTracker:
                   continue
             
                 score = float(inl)/float(matches)
-                scores.append(score)
+            
                 if matches >= 50 and score > 0.45:
                   found += 1
-                  box = self.MinRectByMatchedKeypoints(matchedKp)                                       
-                  boxes.append(box)
+                  box = self.MinRectByMatchedKeypoints(matchedKp) 
+                  scores.append(score)
+                  boxes.append(box)                                          
                   fKp, fDes = self.DeleteKeypoints(
                       fKp, fDes, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
               #cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)                            
       #cv2.imshow("sift", gray_img)            
       
-      return found, boxes
+      if len(scores) > 0:
+          maxIdx = np.argmax(np.array(scores))
+          return found, boxes[maxIdx]
+      else:
+          return 0, 0
   
   def MinRectByMatchedKeypoints(self, kp):
       """Constructs min rect by matched keypoints. 

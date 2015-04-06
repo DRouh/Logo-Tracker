@@ -116,8 +116,7 @@ class AsiftMatcher:
                 descrs.extend(d)
         
             print
-        except:
-            print ires
+        except:            
             keypoints, descrs = self.affine_detect(detector, img, mask, pool)
             
         return keypoints, np.array(descrs)       
