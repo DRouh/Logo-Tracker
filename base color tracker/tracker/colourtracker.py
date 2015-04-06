@@ -71,8 +71,6 @@ class ColourTracker:
         break
   
   def detectLogo(self, label, colors, ref_img, orig_img, gray_img, img_Sift, frameKp, frameDescs):
-      #print " Finding",label
-      
       refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, ref_img, mask = None, pool = self.Pool)
       img = cv2.GaussianBlur(orig_img, (5, 5), 0)
       img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)            
@@ -93,7 +91,7 @@ class ColourTracker:
                 #gray_img = cv2.drawKeypoints(gray_img, filtered_keypoints, filtered_descs)  
                 #cv2.drawContours(gray_img,[boxArray[i]], 0, (b, g, r), 1) 
                                                               
-                inl, matches = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)
+                inl, matches, matchedKp = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, filtered_keypoints, filtered_descs)
                 
                 if inl == None or matches == None:
                   continue
@@ -102,21 +100,19 @@ class ColourTracker:
                 scores.append(score)
                 if matches >= 50 and score > 0.45:
                   found += 1
-                  box = self.MinRectByKeypoints(filtered_keypoints)
-                  #boxes.append(boxArray[i])
+                  box = self.MinRectByKeypoints(matchedKp)                                       
                   boxes.append(box)
                   fKp, fDes = self.DeleteKeypoints(
                       fKp, fDes, boxArray[i][1][0], boxArray[i][1][1], boxArray[i][3][0], boxArray[i][3][1])
               #cv2.drawContours(orig_img,[boxArray[i]], 0, (b, g, r), 1)                            
-      #cv2.imshow("sift", gray_img)      
-      
-      if found>0:
-          print "Found", label, found
+      #cv2.imshow("sift", gray_img)            
       
       return found, boxes
   
-  def MinRectByKeypoints(self, kp):
-      points = np.array([p.pt for p in kp])
+  def MinRectByMatchedKeypoints(self, kp):
+      """Constructs min rect by matched keypoints. 
+      kp - array of x,y coordinates, not opencv keypoints"""
+      points = kp #np.array([p.pt for p in kp])
       minX, minY =  np.amin(points, axis=0)
       maxX, maxY =  np.amax(points, axis=0)
       box = []

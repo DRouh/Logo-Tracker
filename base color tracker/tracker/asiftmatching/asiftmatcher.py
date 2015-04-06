@@ -31,22 +31,22 @@ class AsiftMatcher:
                     #print '%d / %d  inliers/matched' % (np.sum(status), len(status))
                     # do not draw outliers (there will be a lot of them)
                     kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
-                    return np.sum(status), len(status)                    
+                    return np.sum(status), len(status), p2                    
                 else:
                     H, status = None, None
                     noMatches = True
                     #print '%d matches found, not enough for homography estimation' % len(p1)
-                    return None, None
+                    return None, None, None
             else:
-                return None, None
+                return None, None, None
                 #noMatches = True
     
             #win, vis = self.explore_match(win, img1, img2, kp_pairs, noMatches, None, H)
             #return win, vis
             
         #win, vis = match_and_draw('affine find_obj')
-        a,b = match_and_draw('affine find_obj')
-        return a,b
+        a,b,c = match_and_draw('affine find_obj')
+        return a,b,c
         
     def affine_skew(self,tilt, phi, img, mask=None):
         '''
@@ -86,34 +86,40 @@ class AsiftMatcher:
         See http://www.ipol.im/pub/algo/my_affine_sift/ for the details.
         ThreadPool object may be passed to speedup the computation.
         '''
-        params = [(1.0, 0.0)]
-        for t in 2**(0.5*np.arange(1,6)):
-            for phi in np.arange(0, 180, 72.0 / t):
-                params.append((t, phi))
-    
-        def f(p):
-            t, phi = p
-            timg, tmask, Ai = self.affine_skew(t, phi, img)
-            keypoints, descrs = detector.detectAndCompute(timg, tmask)
-            for kp in keypoints:
-                x, y = kp.pt
-                kp.pt = tuple( np.dot(Ai, (x, y, 1)) )
-            if descrs is None:
-                descrs = []
-            return keypoints, descrs
-    
-        keypoints, descrs = [], []
-        if pool is None:
-            ires = it.imap(f, params)
-        else:
-            ires = pool.imap(f, params)
-    
-        for i, (k, d) in enumerate(ires):
-            #print 'affine sampling: %d / %d\r' % (i+1, len(params)),
-            keypoints.extend(k)
-            descrs.extend(d)
-    
-        print
+        try:        
+            params = [(1.0, 0.0)]
+            for t in 2**(0.5*np.arange(1,6)):
+                for phi in np.arange(0, 180, 72.0 / t):
+                    params.append((t, phi))
+        
+            def f(p):
+                t, phi = p
+                timg, tmask, Ai = self.affine_skew(t, phi, img)
+                keypoints, descrs = detector.detectAndCompute(timg, tmask)
+                for kp in keypoints:
+                    x, y = kp.pt
+                    kp.pt = tuple( np.dot(Ai, (x, y, 1)) )
+                if descrs is None:
+                    descrs = []
+                return keypoints, descrs
+        
+            keypoints, descrs = [], []
+            
+            if pool is None:
+                ires = it.imap(f, params)
+            else:
+                ires = pool.imap(f, params)
+            
+            for i, (k, d) in enumerate(ires):
+                #print 'affine sampling: %d / %d\r' % (i+1, len(params)),
+                keypoints.extend(k)
+                descrs.extend(d)
+        
+            print
+        except:
+            print ires
+            keypoints, descrs = self.affine_detect(detector, img, mask, pool)
+            
         return keypoints, np.array(descrs)       
         
         
