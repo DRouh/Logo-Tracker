@@ -86,38 +86,36 @@ class AsiftMatcher:
         See http://www.ipol.im/pub/algo/my_affine_sift/ for the details.
         ThreadPool object may be passed to speedup the computation.
         '''
-        try:        
-            params = [(1.0, 0.0)]
-            for t in 2**(0.5*np.arange(1,6)):
-                for phi in np.arange(0, 180, 72.0 / t):
-                    params.append((t, phi))
+           
+        params = [(1.0, 0.0)]
+        for t in 2**(0.5*np.arange(1,6)):
+            for phi in np.arange(0, 180, 72.0 / t):
+                params.append((t, phi))
+    
+        def f(p):
+            t, phi = p
+            timg, tmask, Ai = self.affine_skew(t, phi, img)
+            keypoints, descrs = detector.detectAndCompute(timg, tmask)
+            for kp in keypoints:
+                x, y = kp.pt
+                kp.pt = tuple( np.dot(Ai, (x, y, 1)) )
+            if descrs is None:
+                descrs = []
+            return keypoints, descrs
+    
+        keypoints, descrs = [], []
         
-            def f(p):
-                t, phi = p
-                timg, tmask, Ai = self.affine_skew(t, phi, img)
-                keypoints, descrs = detector.detectAndCompute(timg, tmask)
-                for kp in keypoints:
-                    x, y = kp.pt
-                    kp.pt = tuple( np.dot(Ai, (x, y, 1)) )
-                if descrs is None:
-                    descrs = []
-                return keypoints, descrs
+        if pool is None:
+            ires = it.imap(f, params)
+        else:
+            ires = pool.imap(f, params)
         
-            keypoints, descrs = [], []
-            
-            if pool is None:
-                ires = it.imap(f, params)
-            else:
-                ires = pool.imap(f, params)
-            
-            for i, (k, d) in enumerate(ires):
-                #print 'affine sampling: %d / %d\r' % (i+1, len(params)),
-                keypoints.extend(k)
-                descrs.extend(d)
-        
-            print
-        except:            
-            keypoints, descrs = self.affine_detect(detector, img, mask, pool)
+        for i, (k, d) in enumerate(ires):
+            #print 'affine sampling: %d / %d\r' % (i+1, len(params)),
+            keypoints.extend(k)
+            descrs.extend(d)
+    
+        print
             
         return keypoints, np.array(descrs)       
         
