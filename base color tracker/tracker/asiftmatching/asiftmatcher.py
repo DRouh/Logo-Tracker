@@ -31,7 +31,9 @@ class AsiftMatcher:
                     #print '%d / %d  inliers/matched' % (np.sum(status), len(status))
                     # do not draw outliers (there will be a lot of them)
                     kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
-                    return np.sum(status), len(status), p2                    
+                    inlKp = [y.pt for x, y in kp_pairs] #unpack inliers keypoints
+                    
+                    return np.sum(status), len(status), inlKp #p2                    
                 else:
                     H, status = None, None
                     noMatches = True
@@ -46,8 +48,9 @@ class AsiftMatcher:
             
         #win, vis = match_and_draw('affine find_obj')
         a,b,c = match_and_draw('affine find_obj')
-        return a,b,c
+        return a, b, c
         
+         
     def affine_skew(self,tilt, phi, img, mask=None):
         '''
         affine_skew(tilt, phi, img, mask=None) -> skew_img, skew_mask, Ai
