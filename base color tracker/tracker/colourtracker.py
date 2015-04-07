@@ -82,7 +82,7 @@ class ColourTracker:
       refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, ref_img, mask = None, pool = self.Pool)
       img = cv2.GaussianBlur(orig_img, (5, 5), 0)
       img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)            
-      boxArray = np.array([self.getBoundingBox(img, int(col)) for col in colors])
+      boxArray = np.array([self.getBoundingBox(img, int(col), resize=True) for col in colors])
            
       scores = []
       found = 0
@@ -169,8 +169,8 @@ class ColourTracker:
       return filtered_keypoints, np.array(filtered_desc)   
           
   def getBoundingBox(self, bluredimage, hue, resize = False):
-      lower = np.array([max(hue - 10, 0), 50, 50])
-      upper = np.array([min(hue + 10, 179), 255, 255])
+      lower = np.array([max(hue - 5, 0), 50, 50])
+      upper = np.array([min(hue + 10, 180), 255, 255])
       
       if resize:
           bluredimage = cv2.resize(bluredimage, (len(bluredimage[0]) / self.scale_down, len(bluredimage) / self.scale_down))
@@ -196,7 +196,7 @@ class ColourTracker:
           max_area = area
           largest_contour = contour
           
-      if not largest_contour == None:         
+      if largest_contour != None:         
         moment = cv2.moments(largest_contour)
         factor = self.scale_down if resize else 1
         if moment["m00"] > 1000 / factor:
