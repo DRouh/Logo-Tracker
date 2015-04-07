@@ -18,7 +18,7 @@ class ColourTracker:
     cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     capture = pathToFile if readFromFile else 0
     self.capture = cv2.VideoCapture(capture)     
-    self.scale_down = 4
+    self.scale_up = 2
     self.Pool = ThreadPool(processes = cv2.getNumberOfCPUs())    
     self.RefImagesBW = imagesBW
     self.RefImagesCLR = imagesCLR
@@ -169,11 +169,11 @@ class ColourTracker:
       return filtered_keypoints, np.array(filtered_desc)   
           
   def getBoundingBox(self, bluredimage, hue, resize = False):
-      lower = np.array([max(hue - 5, 0), 50, 50])
+      lower = np.array([max(hue - 5, 0), 20, 20])
       upper = np.array([min(hue + 10, 180), 255, 255])
       
       if resize:
-          bluredimage = cv2.resize(bluredimage, (len(bluredimage[0]) / self.scale_down, len(bluredimage) / self.scale_down))
+          bluredimage = cv2.resize(bluredimage, (len(bluredimage[0]) * self.scale_up, len(bluredimage) * self.scale_up))
           
       binary = cv2.inRange(bluredimage, lower, upper)
       
@@ -198,10 +198,10 @@ class ColourTracker:
           
       if largest_contour != None:         
         moment = cv2.moments(largest_contour)
-        factor = self.scale_down if resize else 1
-        if moment["m00"] > 1000 / factor:
+        factor = self.scale_up if resize else 1
+        if moment["m00"] > 750 * factor:
           rect = cv2.minAreaRect(largest_contour)                    
-          rect = ((rect[0][0] * factor, rect[0][1] * factor), (rect[1][0] * factor, rect[1][1] * factor), 0)#rect[2])
+          rect = ((rect[0][0] / factor, rect[0][1] / factor), (rect[1][0] / factor, rect[1][1] / factor), 0)#rect[2])
           box = cv2.cv.BoxPoints(rect)
           box = np.int0(box)
           return box
