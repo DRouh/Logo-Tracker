@@ -36,6 +36,12 @@ class ColourTracker:
     h_orig, w_orig, c_orig = (480, 640, 3)      
     logNum = len(self.Colors)
       
+    features = []
+    
+    for i in range(len(self.Labels)-1):
+        print "Initial features extraction {0}/{1}".format(i, len(self.Labels)-1),
+        refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, self.RefImagesBW[i], mask = None, pool = self.Pool)
+        features.append((refKp, refDescs))
     
     length = int(self.capture.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
     while True:
@@ -56,8 +62,8 @@ class ColourTracker:
       vis = np.zeros((max(h_orig, hr * logNum), w_orig + wr, 3), np.uint8)  
       vis[:h_orig, :w_orig] = orig_img   
       found = 0
-      for i in range(len(self.Labels)):
-          found, box = self.detectLogo(self.Labels[i], self.Colors[i], self.RefImagesBW[i], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+      for i in range(len(self.Labels)-1):
+          found, box = self.detectLogo(self.Labels[i], self.Colors[i], features[i], self.RefImagesBW[i], orig_img, gray_img, img_Sift, frameKp, frameDescs)
           #put logo ref-image along with frame if it's found in it
           if found > 0 and len(box) > 0:
               print "found", self.Labels[i]
@@ -78,8 +84,8 @@ class ColourTracker:
         self.capture.release()
         break
   
-  def detectLogo(self, label, colors, ref_img, orig_img, gray_img, img_Sift, frameKp, frameDescs):
-      refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, ref_img, mask = None, pool = self.Pool)
+  def detectLogo(self, label, colors, feature,ref_img, orig_img, gray_img, img_Sift, frameKp, frameDescs):
+      refKp, refDescs = feature
       img = cv2.GaussianBlur(orig_img, (5, 5), 0)
       img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2HSV)            
       boxArray = np.array([self.getBoundingBox(img, int(col), resize=True) for col in colors])
