@@ -29,7 +29,7 @@ class ColourTracker:
     
     
   def run(self):           
-    framenum = 0
+    framenum = 1
     
     hr = 160 # constant for ref-logos resizing
     wr = 120 # constant for ref-logos resizing
@@ -48,7 +48,7 @@ class ColourTracker:
       f, orig_img = self.capture.read()
       if orig_img == None:
           continue
-      print "Frame: {0}/{1}".format(framenum + 1, length),
+      print "Frame: {0}/{1}".format(framenum, length),
  
       #for i in range(3):
       #    orig_img[:, :, i] = cv2.equalizeHist(orig_img[:, :, i])       
@@ -114,7 +114,7 @@ class ColourTracker:
                 score = float(inl)/float(matches)
             
                 if matches >= 150 and score > 0.48:
-                  print matches
+                  
                   found += 1
                   box = self.MinRectByMatchedKeypoints(matchedKp) 
                   scores.append(score)
@@ -126,7 +126,7 @@ class ColourTracker:
       
       if len(scores) > 0:
           maxIdx = np.argmax(np.array(scores))
-          print scores[maxIdx]
+          
           return found, boxes[maxIdx]
       else:
           return 0, 0
