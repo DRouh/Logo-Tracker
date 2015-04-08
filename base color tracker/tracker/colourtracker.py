@@ -205,7 +205,7 @@ class ColourTracker:
       if largest_contour != None:         
         moment = cv2.moments(largest_contour)
         factor = self.scale_up if resize else 1
-        if moment["m00"] > 750 * factor:
+        if moment["m00"] > 2000 * factor:
           rect = cv2.minAreaRect(largest_contour)                    
           rect = ((rect[0][0] / factor, rect[0][1] / factor), (rect[1][0] / factor, rect[1][1] / factor), 0)#rect[2])
           box = cv2.cv.BoxPoints(rect)
