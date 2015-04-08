@@ -39,7 +39,7 @@ class ColourTracker:
     features = []
     
     for i in range(len(self.Labels)-1):
-        print "Initial features extraction {0}/{1}".format(i, len(self.Labels)-1),
+        print "Initial features extraction {0}/{1}".format(i + 1, len(self.Labels) - 1),
         refKp, refDescs = self.AsiftMatcher.affine_detect(self.Detector, self.RefImagesBW[i], mask = None, pool = self.Pool)
         features.append((refKp, refDescs))
     
