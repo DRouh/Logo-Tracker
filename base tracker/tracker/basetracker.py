@@ -55,15 +55,19 @@ class BaseTracker:
       vis[:h_orig, :w_orig] = orig_img   
       found = 0
       
-      found, boxes = self.detectLogo(self.Labels[0], features[0], self.RefImagesBW[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
-      if found > 0 and len(boxes) > 0:
-          print "found", self.Labels[0]
-          for i in range(len(boxes)):
-              cv2.drawContours(vis, [boxes[i]], 0, (255, 255, 0), 2)                       
-          #put ref-logo in container
-          vis[i * hr:(i + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[i], (wr, hr))
-      else:
-          vis[i * hr:(i + 1) * hr, w_orig:w_orig + wr] = np.zeros((hr, wr, 3), np.uint8) 
+      for j in range(len(self.Labels)):
+          found, boxes = self.detectLogo(self.Labels[j], features[j], self.RefImagesBW[j], orig_img, gray_img, img_Sift, frameKp, frameDescs)
+          if found > 0 and len(boxes) > 0:
+              print "found", self.Labels[0]
+              for i in range(len(boxes)):
+                  cv2.drawContours(vis, [boxes[i]], 0, (255, 255, 0), 2)                       
+              #put ref-logo in container
+              
+              vis[j * hr:(j + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[j], (wr, hr))
+              #cv2.putText(vis,"Hello World!!!", (j * hr,w_orig), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+              cv2.putText(vis,str(found),(w_orig,(j + 1) * hr), cv2.FONT_HERSHEY_SIMPLEX, 3,(255,255,255))
+          else:
+              vis[j * hr:(j + 1) * hr, w_orig:w_orig + wr] = np.zeros((hr, wr, 3), np.uint8) 
       
       cv2.imwrite(str(framenum) + ".jpg",vis)
       framenum += 1
@@ -92,7 +96,7 @@ class BaseTracker:
               break
           print "Inliers: {0}. Mathces: {1}.".format(inl, matches)
           score = float(inl)/float(matches)
-          if matches >= 150 and (score > 0.48 or inl > 100):
+          if matches >= 100 and (matches >= 200 or score > 0.48 or inl > 100):
               cont = True
               found += 1
               box = self.MinRectByMatchedKeypoints(matchedKp)
