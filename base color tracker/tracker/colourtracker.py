@@ -153,7 +153,7 @@ class ColourTracker:
       filtered_desc = []
       for i in range(len(kp)):
           kp_x,kp_y = kp[i].pt
-          if(kp_x < left_x and kp_x > right_x and kp_y < left_y and kp_y > right_y):
+          if(not(kp_x >= left_x and kp_x <= right_x and kp_y >= left_y and kp_y <= right_y)):
             filtered_keypoints.append(kp[i])
             filtered_desc.append(des[i])
             
