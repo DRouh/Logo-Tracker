@@ -58,7 +58,8 @@ class BaseTracker:
       found, boxes = self.detectLogo(self.Labels[0], features[0], self.RefImagesBW[0], orig_img, gray_img, img_Sift, frameKp, frameDescs)
       if found > 0 and len(boxes) > 0:
           print "found", self.Labels[0]
-          cv2.drawContours(vis, [boxes[0]], 0, (255, 255, 0), 2)                       
+          for i in range(len(boxes)):
+              cv2.drawContours(vis, [boxes[i]], 0, (255, 255, 0), 2)                       
           #put ref-logo in container
           vis[i * hr:(i + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[i], (wr, hr))
       else:
@@ -81,23 +82,26 @@ class BaseTracker:
       fDes = frameDescs
       boxes = []
       cont = True
-      
+
       while(cont):
+
           cont = False
           inl, matches, matchedKp = self.AsiftMatcher.asift_match(ref_img, gray_img, refKp, refDescs, fKp, fDes)
           
           if inl == None or matches == None:
               break
-          
+          print "Inliers: {0}. Mathces: {1}.".format(inl, matches)
           score = float(inl)/float(matches)
-          if matches >= 150 and score > 0.48:
+          if matches >= 150 and (score > 0.48 or inl > 100):
               cont = True
               found += 1
               box = self.MinRectByMatchedKeypoints(matchedKp)
               scores.append(score)
               boxes.append(box)
               fKp, fDes = self.DeleteKeypoints(fKp, fDes, box[1][0], box[1][1], box[3][0], box[3][1])
-      print found, len(boxes)                    
+
+      print "Found: {0}. Boxes: {1}. Scores: {2}".format(found, len(boxes), scores)
+      
       return found, boxes  
   
   def MinRectByMatchedKeypoints(self, kp):
@@ -122,7 +126,7 @@ class BaseTracker:
       filtered_desc = []
       for i in range(len(kp)):
           kp_x,kp_y = kp[i].pt
-          if(kp_x < left_x and kp_x > right_x and kp_y < left_y and kp_y > right_y):
+          if(not(kp_x >= left_x and kp_x <= right_x and kp_y >= left_y and kp_y <= right_y)):
             filtered_keypoints.append(kp[i])
             filtered_desc.append(des[i])
             
