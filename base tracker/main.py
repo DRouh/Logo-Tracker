@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 import cv2
 
 from tracker.basetracker import BaseTracker
@@ -18,13 +19,14 @@ def loadImagesAndLabels(path,loadOnlyHues=True):
     return labels, refer_imgs_bw, refer_imgs_clr
   
 if __name__ == "__main__":
+  #sys.stdout = open('file', 'w')
   #path to reference logs
   path = 'e:\\master thesis\\Logo-Tracker\\base tracker\\ReferensImages\\'
 
   #color tracker options
   base_tracker_enable = True
   readFromFile = True
-  pathToVideo = "e:\\master thesis\\Logo-Tracker\\base tracker\\st_co.mp4" 
+  pathToVideo = "e:\\master thesis\\Logo-Tracker\\videos\\bigcoce1.mp4" 
   
 #base tracker routine        
   if base_tracker_enable:    

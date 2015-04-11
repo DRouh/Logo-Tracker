@@ -26,7 +26,7 @@ if __name__ == "__main__":
   #color tracker options
   base_tracker_enable = True
   readFromFile = True
-  pathToVideo = "e:\\master thesis\\Logo-Tracker\\base tracker with restoration\\st_co.mp4" 
+  pathToVideo = "e:\\master thesis\\Logo-Tracker\\videos\\st_co.mp4" 
   
 #base tracker routine        
   if base_tracker_enable:    
