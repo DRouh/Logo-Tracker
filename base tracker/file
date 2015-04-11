@@ -1,0 +1,695 @@
+BaseTracker started. Using sift
+Initializing asift matcher
+Initial features extraction 1/1
+Frame: 1/127
+matching ... 801.81 ms
+Inliers: 193. Mathces: 347.
+Found: 1. Boxes: 1. Scores: [0.5561959654178674]
+found coca-cola
+Frame: 2/127
+matching ... 809.32 ms
+Inliers: 193. Mathces: 360.
+Found: 1. Boxes: 1. Scores: [0.5361111111111111]
+found coca-cola
+Frame: 3/127
+matching ... 775.02 ms
+Inliers: 155. Mathces: 276.
+Found: 1. Boxes: 1. Scores: [0.5615942028985508]
+found coca-cola
+Frame: 4/127
+matching ... 741.23 ms
+Inliers: 166. Mathces: 303.
+Found: 1. Boxes: 1. Scores: [0.5478547854785478]
+found coca-cola
+Frame: 5/127
+matching ... 780.50 ms
+Inliers: 205. Mathces: 300.
+Found: 1. Boxes: 1. Scores: [0.6833333333333333]
+found coca-cola
+Frame: 6/127
+matching ... 792.10 ms
+Inliers: 170. Mathces: 296.
+Found: 1. Boxes: 1. Scores: [0.5743243243243243]
+found coca-cola
+Frame: 7/127
+matching ... 812.69 ms
+Inliers: 177. Mathces: 322.
+Found: 1. Boxes: 1. Scores: [0.5496894409937888]
+found coca-cola
+Frame: 8/127
+matching ... 805.85 ms
+Inliers: 179. Mathces: 334.
+Found: 1. Boxes: 1. Scores: [0.5359281437125748]
+found coca-cola
+Frame: 9/127
+matching ... 807.83 ms
+Inliers: 182. Mathces: 345.
+Found: 1. Boxes: 1. Scores: [0.527536231884058]
+found coca-cola
+Frame: 10/127
+matching ... 817.21 ms
+Inliers: 188. Mathces: 302.
+Found: 1. Boxes: 1. Scores: [0.6225165562913907]
+found coca-cola
+Frame: 11/127
+matching ... 798.64 ms
+Inliers: 183. Mathces: 291.
+Found: 1. Boxes: 1. Scores: [0.6288659793814433]
+found coca-cola
+Frame: 12/127
+matching ... 796.16 ms
+Inliers: 199. Mathces: 310.
+Found: 1. Boxes: 1. Scores: [0.6419354838709678]
+found coca-cola
+Frame: 13/127
+matching ... 785.62 ms
+Inliers: 188. Mathces: 334.
+Found: 1. Boxes: 1. Scores: [0.562874251497006]
+found coca-cola
+Frame: 14/127
+matching ... 785.83 ms
+Inliers: 177. Mathces: 327.
+Found: 1. Boxes: 1. Scores: [0.5412844036697247]
+found coca-cola
+Frame: 15/127
+matching ... 776.52 ms
+Inliers: 213. Mathces: 325.
+Found: 1. Boxes: 1. Scores: [0.6553846153846153]
+found coca-cola
+Frame: 16/127
+matching ... 785.78 ms
+Inliers: 196. Mathces: 322.
+Found: 1. Boxes: 1. Scores: [0.6086956521739131]
+found coca-cola
+Frame: 17/127
+matching ... 763.51 ms
+Inliers: 185. Mathces: 333.
+Found: 1. Boxes: 1. Scores: [0.5555555555555556]
+found coca-cola
+Frame: 18/127
+matching ... 733.86 ms
+Inliers: 161. Mathces: 275.
+Found: 1. Boxes: 1. Scores: [0.5854545454545454]
+found coca-cola
+Frame: 19/127
+matching ... 665.33 ms
+Inliers: 131. Mathces: 230.
+Found: 1. Boxes: 1. Scores: [0.5695652173913044]
+found coca-cola
+Frame: 20/127
+matching ... 638.41 ms
+Inliers: 82. Mathces: 157.
+Found: 1. Boxes: 1. Scores: [0.5222929936305732]
+found coca-cola
+Frame: 21/127
+matching ... 618.89 ms
+Inliers: 79. Mathces: 168.
+Querying saved image
+
+matching ... 57.32 ms
+!matches found during querying
+Found: 1. Boxes: 1. Scores: [0.47023809523809523]
+found coca-cola
+Frame: 22/127
+matching ... 648.80 ms
+Inliers: 117. Mathces: 223.
+Found: 1. Boxes: 1. Scores: [0.5246636771300448]
+found coca-cola
+Frame: 23/127
+matching ... 706.24 ms
+Inliers: 158. Mathces: 269.
+Found: 1. Boxes: 1. Scores: [0.587360594795539]
+found coca-cola
+Frame: 24/127
+matching ... 662.72 ms
+Inliers: 131. Mathces: 238.
+Found: 1. Boxes: 1. Scores: [0.5504201680672269]
+found coca-cola
+Frame: 25/127
+matching ... 696.81 ms
+Inliers: 136. Mathces: 281.
+Found: 1. Boxes: 1. Scores: [0.48398576512455516]
+found coca-cola
+Frame: 26/127
+matching ... 696.26 ms
+Inliers: 151. Mathces: 248.
+Found: 1. Boxes: 1. Scores: [0.6088709677419355]
+found coca-cola
+Frame: 27/127
+matching ... 704.82 ms
+Inliers: 140. Mathces: 277.
+Found: 1. Boxes: 1. Scores: [0.5054151624548736]
+found coca-cola
+Frame: 28/127
+matching ... 701.12 ms
+Inliers: 174. Mathces: 335.
+Found: 1. Boxes: 1. Scores: [0.5194029850746269]
+found coca-cola
+Frame: 29/127
+matching ... 724.43 ms
+Inliers: 126. Mathces: 275.
+Found: 1. Boxes: 1. Scores: [0.4581818181818182]
+found coca-cola
+Frame: 30/127
+matching ... 730.54 ms
+Inliers: 172. Mathces: 299.
+Found: 1. Boxes: 1. Scores: [0.5752508361204013]
+found coca-cola
+Frame: 31/127
+matching ... 715.87 ms
+Inliers: 177. Mathces: 302.
+Found: 1. Boxes: 1. Scores: [0.5860927152317881]
+found coca-cola
+Frame: 32/127
+matching ... 644.76 ms
+Inliers: 137. Mathces: 246.
+Found: 1. Boxes: 1. Scores: [0.556910569105691]
+found coca-cola
+Frame: 33/127
+matching ... 647.73 ms
+Inliers: 140. Mathces: 248.
+Found: 1. Boxes: 1. Scores: [0.5645161290322581]
+found coca-cola
+Frame: 34/127
+matching ... 685.22 ms
+Inliers: 151. Mathces: 257.
+Found: 1. Boxes: 1. Scores: [0.5875486381322957]
+found coca-cola
+Frame: 35/127
+matching ... 738.57 ms
+Inliers: 199. Mathces: 322.
+Found: 1. Boxes: 1. Scores: [0.6180124223602484]
+found coca-cola
+Frame: 36/127
+matching ... 795.84 ms
+Inliers: 168. Mathces: 288.
+Found: 1. Boxes: 1. Scores: [0.5833333333333334]
+found coca-cola
+Frame: 37/127
+matching ... 867.64 ms
+Inliers: 174. Mathces: 290.
+Found: 1. Boxes: 1. Scores: [0.6]
+found coca-cola
+Frame: 38/127
+matching ... 904.56 ms
+Inliers: 138. Mathces: 274.
+Found: 1. Boxes: 1. Scores: [0.5036496350364964]
+found coca-cola
+Frame: 39/127
+matching ... 783.46 ms
+Inliers: 150. Mathces: 266.
+Found: 1. Boxes: 1. Scores: [0.5639097744360902]
+found coca-cola
+Frame: 40/127
+matching ... 757.83 ms
+Inliers: 147. Mathces: 296.
+Found: 1. Boxes: 1. Scores: [0.4966216216216216]
+found coca-cola
+Frame: 41/127
+matching ... 695.02 ms
+Inliers: 101. Mathces: 209.
+Found: 1. Boxes: 1. Scores: [0.48325358851674644]
+found coca-cola
+Frame: 42/127
+matching ... 579.29 ms
+Inliers: 54. Mathces: 129.
+Querying saved image
+
+matching ... 41.26 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 43/127
+matching ... 497.48 ms
+Inliers: 16. Mathces: 59.
+Querying saved image
+
+matching ... 38.34 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 44/127
+matching ... 554.25 ms
+Inliers: 24. Mathces: 88.
+Querying saved image
+
+matching ... 43.98 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 45/127
+matching ... 578.54 ms
+Inliers: 21. Mathces: 87.
+Querying saved image
+
+matching ... 41.21 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 46/127
+matching ... 659.33 ms
+Inliers: 43. Mathces: 133.
+Querying saved image
+
+matching ... 46.74 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 47/127
+matching ... 710.40 ms
+Inliers: 125. Mathces: 215.
+Found: 1. Boxes: 1. Scores: [0.5813953488372093]
+found coca-cola
+Frame: 48/127
+matching ... 756.37 ms
+Inliers: 146. Mathces: 264.
+Found: 1. Boxes: 1. Scores: [0.553030303030303]
+found coca-cola
+Frame: 49/127
+matching ... 818.26 ms
+Inliers: 143. Mathces: 313.
+Found: 1. Boxes: 1. Scores: [0.45686900958466453]
+found coca-cola
+Frame: 50/127
+matching ... 877.39 ms
+Inliers: 149. Mathces: 295.
+Found: 1. Boxes: 1. Scores: [0.5050847457627119]
+found coca-cola
+Frame: 51/127
+matching ... 869.34 ms
+Inliers: 131. Mathces: 279.
+Found: 1. Boxes: 1. Scores: [0.46953405017921146]
+found coca-cola
+Frame: 52/127
+matching ... 894.59 ms
+Inliers: 155. Mathces: 282.
+Found: 1. Boxes: 1. Scores: [0.549645390070922]
+found coca-cola
+Frame: 53/127
+matching ... 889.16 ms
+Inliers: 148. Mathces: 277.
+Found: 1. Boxes: 1. Scores: [0.5342960288808665]
+found coca-cola
+Frame: 54/127
+matching ... 910.92 ms
+Inliers: 141. Mathces: 283.
+Found: 1. Boxes: 1. Scores: [0.49823321554770317]
+found coca-cola
+Frame: 55/127
+matching ... 801.19 ms
+Inliers: 165. Mathces: 296.
+Found: 1. Boxes: 1. Scores: [0.5574324324324325]
+found coca-cola
+Frame: 56/127
+matching ... 752.38 ms
+Inliers: 152. Mathces: 267.
+Found: 1. Boxes: 1. Scores: [0.5692883895131086]
+found coca-cola
+Frame: 57/127
+matching ... 737.51 ms
+Inliers: 137. Mathces: 235.
+Found: 1. Boxes: 1. Scores: [0.5829787234042553]
+found coca-cola
+Frame: 58/127
+matching ... 671.38 ms
+Inliers: 70. Mathces: 137.
+Found: 1. Boxes: 1. Scores: [0.5109489051094891]
+found coca-cola
+Frame: 59/127
+matching ... 699.52 ms
+Inliers: 101. Mathces: 232.
+Found: 1. Boxes: 1. Scores: [0.4353448275862069]
+found coca-cola
+Frame: 60/127
+matching ... 561.65 ms
+Inliers: 45. Mathces: 129.
+Querying saved image
+
+matching ... 72.49 ms
+!matches found during querying
+Found: 1. Boxes: 1. Scores: [0.3488372093023256]
+found coca-cola
+Frame: 61/127
+matching ... 617.01 ms
+Inliers: 39. Mathces: 118.
+Querying saved image
+
+matching ... 74.69 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 62/127
+matching ... 597.26 ms
+Inliers: 51. Mathces: 129.
+Querying saved image
+
+matching ... 70.37 ms
+!matches found during querying
+Found: 1. Boxes: 1. Scores: [0.3953488372093023]
+found coca-cola
+Frame: 63/127
+matching ... 530.61 ms
+Inliers: 39. Mathces: 119.
+Querying saved image
+
+matching ... 61.37 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 64/127
+matching ... 562.69 ms
+Inliers: 35. Mathces: 97.
+Querying saved image
+
+matching ... 73.25 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 65/127
+matching ... 564.95 ms
+Inliers: 35. Mathces: 101.
+Querying saved image
+
+matching ... 73.30 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 66/127
+matching ... 544.91 ms
+Inliers: 41. Mathces: 136.
+Querying saved image
+
+matching ... 70.79 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 67/127
+matching ... 549.33 ms
+Inliers: 49. Mathces: 134.
+Querying saved image
+
+matching ... 72.33 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 68/127
+matching ... 566.57 ms
+Inliers: 35. Mathces: 120.
+Querying saved image
+
+matching ... 73.73 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 69/127
+matching ... 704.59 ms
+Inliers: 74. Mathces: 201.
+Found: 1. Boxes: 1. Scores: [0.3681592039800995]
+found coca-cola
+Frame: 70/127
+matching ... 685.18 ms
+Inliers: 116. Mathces: 242.
+Found: 1. Boxes: 1. Scores: [0.4793388429752066]
+found coca-cola
+Frame: 71/127
+matching ... 764.65 ms
+Inliers: 146. Mathces: 286.
+Found: 1. Boxes: 1. Scores: [0.5104895104895105]
+found coca-cola
+Frame: 72/127
+matching ... 620.76 ms
+Inliers: 68. Mathces: 181.
+Querying saved image
+
+matching ... 64.03 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 73/127
+matching ... 539.58 ms
+Inliers: 40. Mathces: 110.
+Querying saved image
+
+matching ... 61.93 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 74/127
+matching ... 595.28 ms
+Inliers: 54. Mathces: 178.
+Querying saved image
+
+matching ... 68.15 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 75/127
+matching ... 524.29 ms
+Inliers: 57. Mathces: 155.
+Querying saved image
+
+matching ... 56.40 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 76/127
+matching ... 374.36 ms
+Inliers: 15. Mathces: 105.
+Querying saved image
+
+matching ... 39.63 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 77/127
+matching ... 535.84 ms
+Inliers: 29. Mathces: 139.
+Querying saved image
+
+matching ... 58.62 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 78/127
+matching ... 712.89 ms
+Inliers: 120. Mathces: 205.
+Found: 1. Boxes: 1. Scores: [0.5853658536585366]
+found coca-cola
+Frame: 79/127
+matching ... 686.21 ms
+Inliers: 84. Mathces: 182.
+Querying saved image
+
+matching ... 61.57 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 80/127
+matching ... 659.91 ms
+Inliers: 71. Mathces: 159.
+Querying saved image
+
+matching ... 63.99 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 81/127
+matching ... 780.54 ms
+Inliers: 95. Mathces: 224.
+Found: 1. Boxes: 1. Scores: [0.42410714285714285]
+found coca-cola
+Frame: 82/127
+matching ... 775.74 ms
+Inliers: 141. Mathces: 275.
+Found: 1. Boxes: 1. Scores: [0.5127272727272727]
+found coca-cola
+Frame: 83/127
+matching ... 633.28 ms
+Inliers: 95. Mathces: 229.
+Found: 1. Boxes: 1. Scores: [0.4148471615720524]
+found coca-cola
+Frame: 84/127
+matching ... 669.90 ms
+Inliers: 76. Mathces: 181.
+Querying saved image
+
+matching ... 52.72 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 85/127
+matching ... 730.00 ms
+Inliers: 83. Mathces: 214.
+Found: 1. Boxes: 1. Scores: [0.3878504672897196]
+found coca-cola
+Frame: 86/127
+matching ... 724.98 ms
+Inliers: 64. Mathces: 194.
+Querying saved image
+
+matching ... 42.88 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 87/127
+matching ... 743.81 ms
+Inliers: 109. Mathces: 241.
+Found: 1. Boxes: 1. Scores: [0.45228215767634855]
+found coca-cola
+Frame: 88/127
+matching ... 567.30 ms
+Inliers: 54. Mathces: 158.
+Querying saved image
+
+matching ... 45.66 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 89/127
+matching ... 496.95 ms
+Inliers: 38. Mathces: 148.
+Querying saved image
+
+matching ... 39.47 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 90/127
+matching ... 490.13 ms
+Inliers: 34. Mathces: 147.
+Querying saved image
+
+matching ... 39.76 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 91/127
+matching ... 619.68 ms
+Inliers: 90. Mathces: 197.
+Querying saved image
+
+matching ... 45.44 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 92/127
+matching ... 656.04 ms
+Inliers: 93. Mathces: 241.
+Found: 1. Boxes: 1. Scores: [0.38589211618257263]
+found coca-cola
+Frame: 93/127
+matching ... 624.86 ms
+Inliers: 48. Mathces: 138.
+Querying saved image
+
+matching ... 43.42 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 94/127
+matching ... 676.43 ms
+Inliers: 103. Mathces: 243.
+Found: 1. Boxes: 1. Scores: [0.42386831275720166]
+found coca-cola
+Frame: 95/127
+matching ... 688.85 ms
+Inliers: 97. Mathces: 284.
+Found: 1. Boxes: 1. Scores: [0.3415492957746479]
+found coca-cola
+Frame: 96/127
+matching ... 627.14 ms
+Inliers: 90. Mathces: 216.
+Found: 1. Boxes: 1. Scores: [0.4166666666666667]
+found coca-cola
+Frame: 97/127
+matching ... 616.85 ms
+Inliers: 97. Mathces: 231.
+Found: 1. Boxes: 1. Scores: [0.4199134199134199]
+found coca-cola
+Frame: 98/127
+matching ... 666.53 ms
+Inliers: 83. Mathces: 243.
+Found: 1. Boxes: 1. Scores: [0.34156378600823045]
+found coca-cola
+Frame: 99/127
+matching ... 674.36 ms
+Inliers: 81. Mathces: 200.
+Found: 1. Boxes: 1. Scores: [0.405]
+found coca-cola
+Frame: 100/127
+matching ... 667.91 ms
+Inliers: 72. Mathces: 204.
+Found: 1. Boxes: 1. Scores: [0.35294117647058826]
+found coca-cola
+Frame: 101/127
+matching ... 680.03 ms
+Inliers: 89. Mathces: 244.
+Found: 1. Boxes: 1. Scores: [0.36475409836065575]
+found coca-cola
+Frame: 102/127
+matching ... 659.38 ms
+Inliers: 97. Mathces: 218.
+Found: 1. Boxes: 1. Scores: [0.44495412844036697]
+found coca-cola
+Frame: 103/127
+matching ... 663.07 ms
+Inliers: 79. Mathces: 250.
+Found: 1. Boxes: 1. Scores: [0.316]
+found coca-cola
+Frame: 104/127
+matching ... 572.47 ms
+Inliers: 72. Mathces: 233.
+Found: 1. Boxes: 1. Scores: [0.3090128755364807]
+found coca-cola
+Frame: 105/127
+matching ... 581.51 ms
+Inliers: 61. Mathces: 162.
+Querying saved image
+
+matching ... 122.70 ms
+!matches found during querying
+Found: 1. Boxes: 1. Scores: [0.3765432098765432]
+found coca-cola
+Frame: 106/127
+matching ... 552.56 ms
+Inliers: 54. Mathces: 206.
+Found: 1. Boxes: 1. Scores: [0.2621359223300971]
+found coca-cola
+Frame: 107/127
+matching ... 571.86 ms
+Inliers: 54. Mathces: 241.
+Found: 1. Boxes: 1. Scores: [0.22406639004149378]
+found coca-cola
+Frame: 108/127
+matching ... 464.00 ms
+Inliers: 63. Mathces: 191.
+Querying saved image
+
+matching ... 26.60 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 109/127
+matching ... 404.62 ms
+Inliers: 51. Mathces: 194.
+Querying saved image
+
+matching ... 23.58 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 110/127
+matching ... 461.57 ms
+Inliers: 36. Mathces: 135.
+Querying saved image
+
+matching ... 26.43 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 111/127
+matching ... 487.92 ms
+Inliers: 60. Mathces: 230.
+Found: 1. Boxes: 1. Scores: [0.2608695652173913]
+found coca-cola
+Frame: 112/127
+matching ... 577.02 ms
+Inliers: 66. Mathces: 200.
+Found: 1. Boxes: 1. Scores: [0.33]
+found coca-cola
+Frame: 113/127
+matching ... 626.88 ms
+Inliers: 67. Mathces: 220.
+Found: 1. Boxes: 1. Scores: [0.30454545454545456]
+found coca-cola
+Frame: 114/127
+matching ... 347.55 ms
+Inliers: 47. Mathces: 162.
+Querying saved image
+
+matching ... 19.75 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 115/127
+matching ... 362.53 ms
+Inliers: 49. Mathces: 164.
+Querying saved image
+
+matching ... 17.51 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 116/127
+matching ... 436.95 ms
+Inliers: 27. Mathces: 150.
+Querying saved image
+
+matching ... 24.48 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 117/127
+matching ... 503.55 ms
+Inliers: 32. Mathces: 165.
+Querying saved image
+
+matching ... 25.89 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 118/127
+matching ... 550.16 ms
+Inliers: 44. Mathces: 206.
+Found: 1. Boxes: 1. Scores: [0.21359223300970873]
+found coca-cola
+Frame: 119/127
+matching ... 588.58 ms
+Inliers: 63. Mathces: 205.
+Found: 1. Boxes: 1. Scores: [0.3073170731707317]
+found coca-cola
+Frame: 120/127
+matching ... 592.39 ms
+Inliers: 75. Mathces: 220.
+Found: 1. Boxes: 1. Scores: [0.3409090909090909]
+found coca-cola
+Frame: 121/127
+matching ... 565.58 ms
+Inliers: 59. Mathces: 197.
+Querying saved image
+
+matching ... 34.14 ms
+Found: 0. Boxes: 0. Scores: []
+Frame: 122/
