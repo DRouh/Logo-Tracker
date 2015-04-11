@@ -31,7 +31,7 @@ if __name__ == "__main__":
   #color tracker options
   color_tracker_enable = True
   readFromFile = True
-  pathToVideo = "e:/master thesis/Logo-Tracker/base color tracker/st_co.mp4"
+  pathToVideo = "e:/master thesis/Logo-Tracker/base color tracker/bigcoce1.mp4"
   
 #detect dominant colors
   if detect_dominant_colors:
@@ -41,5 +41,6 @@ if __name__ == "__main__":
 #color tracker routine        
   if color_tracker_enable:    
       colors, labels, refer_imgs_bw, refer_imgs_clr, = loadColorsAndLabels(colorsPath)
+      print labels
       colour_tracker = ColourTracker("sift", labels, refer_imgs_bw, refer_imgs_clr, colors, pathToVideo, readFromFile)
       colour_tracker.run()
