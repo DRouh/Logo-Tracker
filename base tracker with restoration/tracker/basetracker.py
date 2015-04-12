@@ -15,7 +15,7 @@ class BaseTracker:
     
   def __init__(self, name, labels, imagesBW, imagesCLR, pathToFile, readFromFile = False):
     print 'BaseTracker started. Using', name
-    cv2.namedWindow("ColourTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
+    cv2.namedWindow("BaseTrackerWindow", cv2.CV_WINDOW_AUTOSIZE)
     capture = pathToFile if readFromFile else 0
     self.capture = cv2.VideoCapture(capture)         
     self.Pool = ThreadPool(processes = cv2.getNumberOfCPUs())    
