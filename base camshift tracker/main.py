@@ -21,7 +21,7 @@ def loadImagesAndLabels(path,loadOnlyHues=True):
 if __name__ == "__main__":
   #sys.stdout = open('file', 'w')
   #path to reference logs
-  path = 'e:\\master thesis\\Logo-Tracker\\base tracker with restoration\\ReferensImages\\'
+  path = 'e:\\master thesis\\Logo-Tracker\\base camshift tracker\ReferensImages\\'
 
   #color tracker options
   base_tracker_enable = True
