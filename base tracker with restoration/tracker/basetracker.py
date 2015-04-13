@@ -65,8 +65,7 @@ class BaseTracker:
               for i in range(len(boxes)):
                   cv2.drawContours(vis, [boxes[i]], 0, (255, 255, 0), 2)                                     
               
-              vis[j * hr:(j + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[j], (wr, hr))
-              #cv2.putText(vis,"Hello World!!!", (j * hr,w_orig), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+              vis[j * hr:(j + 1) * hr, w_orig:w_orig + wr] = cv2.resize(self.RefImagesCLR[j], (wr, hr))              
               cv2.putText(vis,str(found),(w_orig,(j + 1) * hr), cv2.FONT_HERSHEY_SIMPLEX, 3,(255,255,255))
           else:
               vis[j * hr:(j + 1) * hr, w_orig:w_orig + wr] = np.zeros((hr, wr, 3), np.uint8) 
