@@ -12,6 +12,7 @@ import glob
 import pickle
 import os
 import sys
+import cv2
 #sys.stdout = open('log.txt', 'w')
 
 #Load the images
@@ -25,10 +26,14 @@ print
 #Convert the images to grayscale, and extract the SURF descriptors
 surf_features = []
 counter = 1
+sift = cv2.SIFT()
 for f in all_instance_filenames:
     print 'Reading image:{0}. {1}/{2}'.format(f, counter, len(all_instance_targets))
-    image = mh.imread(f, as_grey=True)
-    surf_features.append(surf.surf(image)[:,5:])
+    img = cv2.imread(f)
+    gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    #surf_features.append(surf.surf(image)[:,5:])
+    kp, des = sift.detectAndCompute(gray, None)
+    surf_features.append(des)
     counter += 1
 
 #Split the images into training and testing data
@@ -49,8 +54,8 @@ n_clusters = 300
 print 'Clustering', len(X_train_surf_features), 'features'
 estimator = MiniBatchKMeans(n_clusters=n_clusters, verbose=1)
 estimator.fit_transform(X_train_surf_features)
-with open('KMeansLgo.pkl','wb') as f:
-    pickle.dump(estimator,f)
+#with open('KMeansLgo.pkl','wb') as f:
+#    pickle.dump(estimator,f)
 #estimator = pickle.load(open('estimator.pkl', "rb"))
 
 
@@ -91,30 +96,30 @@ print 'Precision: ', precision_score(y_test, predictions)
 print 'Recall: ', recall_score(y_test, predictions)
 print 'Accuracy: ', accuracy_score(y_test, predictions)
 
-print "Started random forest"
-
-pipeline = Pipeline([
-    ('clf', RandomForestClassifier(criterion='entropy',verbose=1))
-  ])
-  
-parameters = {
-    'clf__n_estimators': (10000,),
-    'clf__max_depth': (25,),
-    'clf__min_samples_split': (1,),
-    'clf__min_samples_leaf': (1,2,3,)
-  }
-  
-grid_search = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, scoring='f1')
-grid_search.fit(X_train, y_train)
-print 'Best score: %0.3f' % grid_search.best_score_
-print 'Best parameters set:'
-best_parameters = grid_search.best_estimator_.get_params()
-for param_name in sorted(parameters.keys()):
-    print '\t%s: %r' % (param_name, best_parameters[param_name])
-#with open('KMeans.pkl','wb') as f:
-#    pickle.dump(estimator,f)
-    
-with open('RF.pkl','wb') as f:
-    pickle.dump(grid_search.best_estimator_,f)
+#print "Started random forest"
+#
+#pipeline = Pipeline([
+#    ('clf', RandomForestClassifier(criterion='entropy',verbose=1))
+#  ])
+#  
+#parameters = {
+#    'clf__n_estimators': (10000,),
+#    'clf__max_depth': (25,),
+#    'clf__min_samples_split': (1,),
+#    'clf__min_samples_leaf': (1,2,3,)
+#  }
+#  
+#grid_search = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, scoring='f1')
+#grid_search.fit(X_train, y_train)
+#print 'Best score: %0.3f' % grid_search.best_score_
+#print 'Best parameters set:'
+#best_parameters = grid_search.best_estimator_.get_params()
+#for param_name in sorted(parameters.keys()):
+#    print '\t%s: %r' % (param_name, best_parameters[param_name])
+##with open('KMeans.pkl','wb') as f:
+##    pickle.dump(estimator,f)
+#    
+#with open('RF.pkl','wb') as f:
+#    pickle.dump(grid_search.best_estimator_,f)
 
 #os.system("shutdown /s")
