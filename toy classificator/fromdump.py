@@ -1,13 +1,11 @@
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import *
-from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import KMeans
 from sklearn.metrics import classification_report
-from multiprocessing.pool import ThreadPool
 import glob
 import pickle
-import cv2
-from asiftmatching import asiftmatcher
+
 #sys.stdout = open('log.txt', 'w')
 
 #Load the images
@@ -78,8 +76,3 @@ print 'Recall: ', recall_score(y_test, predictions)
 print 'Accuracy: ', accuracy_score(y_test, predictions)
 with open('LogisticRegressionCoceAndNone.pkl','wb') as f:
     pickle.dump(clf,f)
-    
-print classification_report(y_test, predictions)
-print 'Precision: ', precision_score(y_test, predictions)
-print 'Recall: ', recall_score(y_test, predictions)
-print 'Accuracy: ', accuracy_score(y_test, predictions)
