@@ -25,16 +25,16 @@ for f in all_instance_filenames:
     counter += 1
 
 #Split the images into training and testing data
-train_len = int(len(all_instance_filenames)*.80)
+train_len = int(len(all_instance_filenames)*.100)
 
 indices = np.random.permutation(len(all_instance_filenames))
 training_idx, test_idx = indices[:train_len], indices[train_len:]
 print training_idx, test_idx
 
 X_train_surf_features = np.concatenate([surf_features[i] for i in training_idx])
-X_test_surf_features = np.concatenate([surf_features[i] for i in test_idx])
+#X_test_surf_features = np.concatenate([surf_features[i] for i in test_idx])
 y_train = [all_instance_targets[i]  for i in training_idx]
-y_test = [all_instance_targets[i]  for i in test_idx]
+#y_test = [all_instance_targets[i]  for i in test_idx]
 
 #Group the extracted descriptors into 300 clusters. Use MiniBatchKMeans
 #to compute the distances to the centroids for a sample of the instances.
@@ -54,22 +54,22 @@ for instance in surf_features[:train_len]:
 		features = np.append(features, np.zeros((1, n_clusters-len(features))))
 	X_train.append(features)
 
-X_test = []
-count = 0
-for instance in surf_features[train_len:]:
-    clusters = estimator.predict(instance)
-    features = np.bincount(clusters)
-    if len(features) < n_clusters:  
-        features = np.append(features, np.zeros((1, n_clusters-len(features))))
-    X_test.append(features)
-    count+=1
+#X_test = []
+#count = 0
+#for instance in surf_features[train_len:]:
+#    clusters = estimator.predict(instance)
+#    features = np.bincount(clusters)
+#    if len(features) < n_clusters:  
+#        features = np.append(features, np.zeros((1, n_clusters-len(features))))
+#    X_test.append(features)
+#    count+=1
 
 #Train a logistic regression classifier on the feature vectors and targets,
 #and assess its precision, recall, and accuracy.
 print "Logistic regression"
 clf = LogisticRegression(C=0.001, penalty='l2')
 clf.fit_transform(X_train, y_train)
-predictions = clf.predict(X_test)
+#predictions = clf.predict(X_test)
 print classification_report(y_test, predictions)
 print 'Precision: ', precision_score(y_test, predictions)
 print 'Recall: ', recall_score(y_test, predictions)
