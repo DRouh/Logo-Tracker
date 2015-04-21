@@ -20,80 +20,39 @@ from asiftmatching import asiftmatcher
 #sys.stdout = open('log.txt', 'w')
 
 #Load the images
-all_instance_filenames = []
-all_instance_targets = []
-for f in glob.glob('t/*.jpg'):
+train_instance_filenames = []
+train_instance_targets = []
+for f in glob.glob('train_hist/*.hist'):
 	target = 1 if 'cocacola' in f else 0
-	all_instance_filenames.append(f)
-	all_instance_targets.append(target)
+	train_instance_filenames.append(f)
+	train_instance_targets.append(target)
 print 
-#Convert the images to grayscale, and extract the SURF descriptors
+
+test_instance_filenames = []
+test_instance_targets = []
+for f in glob.glob('test_hist/*.hist'):
+	target = 1 if 'cocacola' in f else 0
+	test_instance_filenames.append(f)
+	test_instance_targets.append(target)
+print 
+
 surf_features = []
 counter = 1
-detector, matcher = cv2.SIFT(), cv2.BFMatcher(cv2.NORM_L2)
-asiftMatcher = asiftmatcher.AsiftMatcher(matcher)
-Pool = ThreadPool(processes = 2)#cv2.getNumberOfCPUs())    
-for f in all_instance_filenames:
-    print 'Reading image:{0}. {1}/{2}'.format(f, counter, len(all_instance_targets))
-    img = cv2.imread(f)
-    gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    #surf_features.append(surf.surf(image)[:,5:])
-    kp, des = asiftMatcher.affine_detect(detector, gray, mask=None, pool=Pool)
-    #arr = np.array(des)
-    #fname = f + '.sift' 
-    #fname = f
-    #np.save(fname, arr)
-    #des = np.load(fname).tolist()
-    fname = f + ".asift"
-    with open(fname,'wb') as f:
-        pickle.dump(des,f)
-    surf_features.append(des)
-    #gc.collect()
-    #time.sleep(1)
-    
-    counter += 1
-
-#Split the images into training and testing data
-train_len = int(len(all_instance_filenames)*.60)
-
-indices = np.random.permutation(len(all_instance_filenames))
-training_idx, test_idx = indices[:train_len], indices[train_len:]
-print training_idx, test_idx
-
-X_train_surf_features = np.concatenate([surf_features[i] for i in training_idx])
-X_test_surf_features = np.concatenate([surf_features[i] for i in test_idx])
-y_train = [all_instance_targets[i]  for i in training_idx]
-y_test = [all_instance_targets[i]  for i in test_idx]
-
-#Group the extracted descriptors into 300 clusters. Use MiniBatchKMeans
-#to compute the distances to the centroids for a sample of the instances.
-n_clusters = 300
-print 'Clustering', len(X_train_surf_features), 'features'
-estimator = MiniBatchKMeans(n_clusters=n_clusters, verbose=1)
-estimator.fit_transform(X_train_surf_features)
-#with open('KMeansLgo.pkl','wb') as f:
-#    pickle.dump(estimator,f)
-#estimator = pickle.load(open('estimator.pkl', "rb"))
-
 
 X_train = []
-for instance in surf_features[:train_len]:
-	clusters = estimator.predict(instance)
-	features = np.bincount(clusters)
-	if len(features) < n_clusters:
-		features = np.append(features, np.zeros((1, n_clusters-len(features))))
-	X_train.append(features)
+y_train = train_instance_targets
+for f in train_instance_filenames:
+    print 'Reading image:{0}. {1}/{2}'.format(f, counter, len(train_instance_targets))
+    X_train.append(pickle.load(open(f, "rb")))    
+    counter += 1
 
-print "len(surf_features[train_len:])",len(surf_features[train_len:])
+counter = 1
 X_test = []
-count = 0
-for instance in surf_features[train_len:]:
-    clusters = estimator.predict(instance)
-    features = np.bincount(clusters)
-    if len(features) < n_clusters:  
-        features = np.append(features, np.zeros((1, n_clusters-len(features))))
-    X_test.append(features)
-    count+=1
+y_test = test_instance_targets
+for f in test_instance_filenames:
+    print 'Reading image:{0}. {1}/{2}'.format(f, counter, len(test_instance_targets))
+    X_test.append(pickle.load(open(f, "rb")))    
+    counter += 1
 
 #Train a logistic regression classifier on the feature vectors and targets,
 #and assess its precision, recall, and accuracy.
@@ -107,11 +66,7 @@ print 'Recall: ', recall_score(y_test, predictions)
 print 'Accuracy: ', accuracy_score(y_test, predictions)
 with open('LogisticRegression.pkl','wb') as f:
     pickle.dump(clf,f)
-    
-print classification_report(y_test, predictions)
-print 'Precision: ', precision_score(y_test, predictions)
-print 'Recall: ', recall_score(y_test, predictions)
-print 'Accuracy: ', accuracy_score(y_test, predictions)
+
 
 #print "Started random forest"
 #
