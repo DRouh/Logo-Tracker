@@ -1,1 +1,0 @@
-dir *.asift /b /s >> files.txt
