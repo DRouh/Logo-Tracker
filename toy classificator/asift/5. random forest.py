@@ -47,8 +47,8 @@ if __name__ == "__main__":
             X_test.append(pickle.load(open(f, "rb")))    
             counter += 1
         
-        print "Started random forest"
         
+        #Extremely Random forest
         pipeline = Pipeline([
             ('clf', ExtraTreesClassifier(criterion='entropy',verbose=0))
           ])
