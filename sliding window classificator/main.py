@@ -35,14 +35,18 @@ def sliding_window(image, stepSize, windowSize):
 
 if __name__ == '__main__':
     # load the image
+    sift = cv2.SIFT()
     image = cv2.imread("cocacola.png", cv2.COLOR_BGR2GRAY)
     image = cv2.resize(image, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_CUBIC)
+
     (winW, winH) = (128, 128)
-    sift = cv2.SIFT()
+
     for resized in pyramid(image, scale=1.5):
+        #calculate keypoints
         cop = resized.copy()
         gray = cv2.cvtColor(cop, cv2.COLOR_BGR2GRAY)
         kp, des = sift.detectAndCompute(gray, None)
+
         for (x, y, window) in sliding_window(resized, stepSize=32, windowSize=(winW, winH)):
             # if the window does not meet our desired window size, ignore it
             if window.shape[0] != winH or window.shape[1] != winW:
@@ -57,6 +61,6 @@ if __name__ == '__main__':
             cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
             clone = cv2.drawKeypoints(clone, kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv2.imshow("Window", clone)
-            cv2.imwrite("clone.png", clone)
-            cv2.waitKey(1)
-            # time.sleep(0.025)
+            if cv2.waitKey(20) == 27:
+                cv2.destroyAllWindows()
+                break
