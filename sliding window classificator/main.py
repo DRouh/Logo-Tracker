@@ -38,7 +38,7 @@ if __name__ == '__main__':
     sift = cv2.SIFT()
     image = cv2.imread("cocacola.png", cv2.COLOR_BGR2GRAY)
     image = cv2.resize(image, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_CUBIC)
-
+    show_keypoints = False
     (winW, winH) = (128, 128)
 
     for resized in pyramid(image, scale=1.5):
@@ -59,8 +59,13 @@ if __name__ == '__main__':
             # since we do not have a classifier, we'll just draw the window
             clone = resized.copy()
             cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
-            clone = cv2.drawKeypoints(clone, kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            if show_keypoints:
+                clone = cv2.drawKeypoints(clone, kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv2.imshow("Window", clone)
-            if cv2.waitKey(20) == 27:
+
+            ch = 0xFF & cv2.waitKey(5)
+            if ch == 27:
                 cv2.destroyAllWindows()
                 break
+            if ch == ord('s'):
+                show_keypoints = not show_keypoints
