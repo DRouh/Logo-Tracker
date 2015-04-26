@@ -58,7 +58,7 @@ if __name__ == '__main__':
     estimator = pickle.load(open('KMeansCoceAndNone.pkl', "rb"))
 
     # load classifier (Extremely random forest; need to re-calc gradient boosting
-    clf = pickle.load(open('ERF_best.pkl', 'rb'))
+    clf = pickle.load(open('GB_best.pkl', 'rb'))
 
 
     detector, matcher = cv2.SIFT(), cv2.BFMatcher(cv2.NORM_L2)
