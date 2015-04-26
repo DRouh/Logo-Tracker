@@ -56,6 +56,9 @@ if __name__ == '__main__':
     n_clusters = 300
     estimator = pickle.load(open('KMeansCoceAndNoneSIFT.pkl', "rb"))
 
+    # load classifier
+    clf = pickle.load(open('GB_best.pkl', 'rb'))
+
     sift = cv2.SIFT()
 
     # load the image
@@ -68,13 +71,13 @@ if __name__ == '__main__':
 
     # size of sliding-window
     (winW, winH) = (128, 128)
-
+    boxes = []
     for resized in pyramid(image, scale=1.5):
         # calculate keypoints
         cop = resized.copy()
         gray = cv2.cvtColor(cop, cv2.COLOR_BGR2GRAY)
         kp, des = sift.detectAndCompute(gray, None)
-
+        boxes = []
         for (x, y, window) in sliding_window(resized, stepSize=32, windowSize=(winW, winH)):
             # if the window does not meet our desired window size, ignore it
             if window.shape[0] != winH or window.shape[1] != winW:
@@ -83,13 +86,32 @@ if __name__ == '__main__':
             # take only keypoints that belong to the sliding-window
             fkp, fds = filterKeypoints(kp, des, x, y, x + winW, y + winH)
 
-            # THIS IS WHERE YOU WOULD PROCESS YOUR WINDOW, SUCH AS APPLYING A
-            # MACHINE LEARNING CLASSIFIER TO CLASSIFY THE CONTENTS OF THE
-            # WINDOW
+            if fds.any():
+                # calculate b-o-w
+                clusters = estimator.predict(fds)
+                features = np.bincount(clusters)
+                if len(features) < n_clusters:
+                    features = np.append(features, np.zeros((1, n_clusters - len(features))))
+                prediction = clf.predict(features)
+                # THIS IS WHERE YOU WOULD PROCESS YOUR WINDOW, SUCH AS APPLYING A
+                # MACHINE LEARNING CLASSIFIER TO CLASSIFY THE CONTENTS OF THE
+                # WINDOW
+            else:
+                prediction = [0]
+
+            if prediction == [1]:
+                boxes.append((x, y, x + winW, y + winH))
 
             # since we do not have a classifier, we'll just draw the window
             clone = resized.copy()
             cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
+
+            #print prediction
+
+            if len(boxes) > 0:
+                for (_, (x0, y0, x1, y1)) in enumerate(boxes):
+                    cv2.rectangle(clone, (x0, y0), (x1, y1), (255, 0, 255), 2)
+
             if show_keypoints:
                 clone = cv2.drawKeypoints(clone, fkp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv2.imshow("Window", clone)
@@ -100,4 +122,4 @@ if __name__ == '__main__':
                 break
             if ch == ord('s'):
                 show_keypoints = not show_keypoints
-            sleep(0.25)
+            #sleep(0.1)
