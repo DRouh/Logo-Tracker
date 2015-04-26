@@ -7,7 +7,7 @@ n_clusters = 300
 sift = cv2.SIFT() 
 estimator = pickle.load(open('KMeansCoceAndNoneSIFT.pkl', "rb"))
 
-img = cv2.imread("1.jpg")
+img = cv2.imread("cocacola.jpg")
 gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
 kp, des = sift.detectAndCompute(gray, None)
