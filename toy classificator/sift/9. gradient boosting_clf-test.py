@@ -1,13 +1,9 @@
-from sklearn.metrics import *
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import classification_report
-from sklearn.grid_search import GridSearchCV
 import glob
 import pickle
-import os
-import sys
+
+from sklearn.metrics import *
+from sklearn.metrics import classification_report
+
 
 if __name__ == "__main__":
     # Load the images
