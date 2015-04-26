@@ -1,6 +1,7 @@
 import pickle
 from time import sleep
-
+from asiftmatching import asiftmatcher
+from multiprocessing.pool import ThreadPool
 import cv2
 import numpy as np
 
@@ -54,13 +55,15 @@ if __name__ == '__main__':
 
     # load k-means
     n_clusters = 300
-    estimator = pickle.load(open('KMeansCoceAndNoneSIFT.pkl', "rb"))
+    estimator = pickle.load(open('KMeansCoceAndNone.pkl', "rb"))
 
-    # load classifier
-    clf = pickle.load(open('GB_best.pkl', 'rb'))
+    # load classifier (Extremely random forest; need to re-calc gradient boosting
+    clf = pickle.load(open('ERF_best.pkl', 'rb'))
 
-    sift = cv2.SIFT()
 
+    detector, matcher = cv2.SIFT(), cv2.BFMatcher(cv2.NORM_L2)
+    asiftMatcher = asiftmatcher.AsiftMatcher(matcher)
+    Pool = ThreadPool(processes=8)
     # load the image
     image = cv2.imread("cocacola.png", cv2.COLOR_BGR2GRAY)
 
@@ -76,7 +79,7 @@ if __name__ == '__main__':
         # calculate keypoints
         cop = resized.copy()
         gray = cv2.cvtColor(cop, cv2.COLOR_BGR2GRAY)
-        kp, des = sift.detectAndCompute(gray, None)
+        kp, des = asiftMatcher.affine_detect(detector, gray, mask=None, pool=Pool)
         boxes = []
         for (x, y, window) in sliding_window(resized, stepSize=32, windowSize=(winW, winH)):
             # if the window does not meet our desired window size, ignore it
@@ -122,4 +125,4 @@ if __name__ == '__main__':
                 break
             if ch == ord('s'):
                 show_keypoints = not show_keypoints
-            #sleep(0.1)
+            sleep(0.1)
