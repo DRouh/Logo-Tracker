@@ -120,10 +120,10 @@ if __name__ == '__main__':
     sift = cv2.SIFT()
     rs = RootSIFT()
     # load the image
-    image = cv2.imread("cocacola.png", cv2.COLOR_BGR2GRAY)
+    image = cv2.imread("cocacola.png")
 
     # resize image (ex. is too big)
-    image = cv2.resize(image, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_CUBIC)
+    #image = cv2.resize(image, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_CUBIC)
 
     show_keypoints = False
 
@@ -171,11 +171,11 @@ if __name__ == '__main__':
                 # perform non-maximum suppression on the bounding boxes
                 pick = non_max_suppression_fast(np.array(boxes), 0.1)
 
-                #for (_, (x0, y0, x1, y1)) in enumerate(boxes):
-                #    cv2.rectangle(clone, (x0, y0), (x1, y1), (255, 0, 255), 2)
+                for (_, (x0, y0, x1, y1)) in enumerate(boxes):
+                    cv2.rectangle(clone, (x0, y0), (x1, y1), (255, 0, 255), 2)
 
-                for (_, (x0, y0, x1, y1)) in enumerate(pick):
-                    cv2.rectangle(clone, (x0, y0), (x1, y1), (255, 0, 0), 2)
+                #for (_, (x0, y0, x1, y1)) in enumerate(pick):
+#                    cv2.rectangle(clone, (x0, y0), (x1, y1), (255, 0, 0), 2)
 
             if show_keypoints:
                 clone = cv2.drawKeypoints(clone, fkp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)

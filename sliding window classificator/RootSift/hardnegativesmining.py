@@ -71,7 +71,7 @@ if __name__ == '__main__':
     pathToSaveNotFound = 'e:/master thesis/Logo-Tracker/sliding window classificator/RootSift/hardnegativemining_base/notfound/'
     # Load the images
     all_instance_filenames = []
-    for f in glob.glob('hardnegativemining_base/*.jpg'):
+    for f in glob.glob('full pics/*.jpg'):
         all_instance_filenames.append(f)
 
     counter = 0
