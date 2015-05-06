@@ -28,24 +28,15 @@ def url2filename(url):
     return basename
 
 
-def download(url):
-    """Copy the contents of a file from a given URL
-    to a local file.
-    """
-    import urllib
-
-    webFile = urllib.urlopen(url)
-    localFile = open(url.split('/')[-1], 'w')
-    localFile.write(webFile.read())
-    webFile.close()
-    localFile.close()
-
-
 if __name__ == '__main__':
-    fname = 'cocacola.txt'
+    fname = 'ImageNet Pepsi.txt'
     with open(fname) as f:
         content = f.readlines()
     content = [x.strip('\n') for x in content]
 
-    for url in content:
-        local_filename, headers = urllib.urlretrieve(url, url2filename(url))
+    for i, url in enumerate(content):
+        print "Downloading {0}/{1}".format(i + 1, len(content))
+        try:
+            local_filename, headers = urllib.urlretrieve(url, url2filename(url))
+        except IOError:
+            print "Can't download {0}. Skipped.".format(url)
